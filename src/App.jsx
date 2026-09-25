@@ -475,7 +475,7 @@ function App() {
 
   const [angleDeg, setAngleDeg] =
 
-    useState(0);
+    useState(20);
 
   const [zoom, setZoom] =
 
@@ -1647,7 +1647,7 @@ function App() {
 
           grid-template-columns:
 
-            238px
+            278px
 
             minmax(0, 1fr)
 
@@ -1993,8 +1993,6 @@ function App() {
 
           border-radius: 4px;
 
-          background: #82c6c0;
-
           border:
 
             1px solid
@@ -2165,10 +2163,8 @@ function App() {
 
         <div>
 
-          <h1>
-
+          <h1 style={{ color: "gray" }}>
             Plane-wave refraction
-
           </h1>
 
           <p className="sub">
@@ -2291,11 +2287,7 @@ function App() {
 
               </strong>
 
-              <small>
-
-                cycles / second
-
-              </small>
+              
 
             </div>
 
@@ -2319,17 +2311,7 @@ function App() {
 
               </strong>
 
-              <small>
-
-                {Math.round(
-
-                  wavelengthSquares *
-
-                    GRID_UNIT_PX
-
-                )} px
-
-              </small>
+              
 
             </div>
 
@@ -2353,17 +2335,7 @@ function App() {
 
               </strong>
 
-              <small>
-
-                {Math.round(
-
-                  wavelength2Squares *
-
-                    GRID_UNIT_PX
-
-                )} px
-
-              </small>
+              
 
             </div>
 
@@ -2389,15 +2361,7 @@ function App() {
 
               </strong>
 
-              <small>
-
-                {Math.round(
-
-                  visualSpeed2
-
-                )} px/s
-
-              </small>
+              
 
             </div>
 
@@ -2423,15 +2387,7 @@ function App() {
 
               </strong>
 
-              <small>
-
-                {Math.round(
-
-                  visualSpeed1
-
-                )} px/s
-
-              </small>
+              
 
             </div>
 
@@ -2473,7 +2429,240 @@ function App() {
 
             </div>
 
+
+
+
           </div>
+
+
+
+
+
+
+
+
+          <div
+            style={{
+              marginTop: "18px",
+              padding: "16px",
+              background: "#f5f8f8",
+              border: "1px solid #d8e2e3",
+              borderRadius: "10px",
+            }}
+          >
+            <h3
+              style={{
+                margin: "0 0 14px 0",
+                fontSize: "15px",
+                fontWeight: 600,
+                color: "#263b40",
+              }}
+            >
+              Snell's law
+            </h3>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "14px",
+              }}
+            >
+              {/* Equation */}
+              <div>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    color: "#52656b",
+                    marginBottom: "5px",
+                  }}
+                >
+                  Equation
+                </div>
+
+                <div
+                  style={{
+                    fontFamily: "Georgia, serif",
+                    fontSize: "15px",
+                    color: "#263b40",
+                  }}
+                >
+                  n₁ sin(θ₁) = n₂ sin(θ₂)
+                </div>
+              </div>
+
+              {/* Rearrange */}
+              <div>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    color: "#52656b",
+                    marginBottom: "7px",
+                  }}
+                >
+                  Rearrange
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    fontFamily: "Georgia, serif",
+                    fontSize: "15px",
+                    color: "#263b40",
+                  }}
+                >
+                  <span>sin(θ₂) =</span>
+
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    <span
+                      style={{
+                        padding: "0 8px 3px",
+                        borderBottom: "1px solid #263b40",
+                      }}
+                    >
+                      n₁ sin(θ₁)
+                    </span>
+                    <span style={{ paddingTop: "3px" }}>
+                      n₂
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Substitute */}
+              <div>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    color: "#52656b",
+                    marginBottom: "7px",
+                  }}
+                >
+                  Substitute values
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    fontFamily: "Georgia, serif",
+                    fontSize: "15px",
+                    color: "#263b40",
+                  }}
+                >
+                  <span>sin(θ₂) =</span>
+
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    <span
+                      style={{
+                        padding: "0 8px 3px",
+                        borderBottom: "1px solid #263b40",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {n1.toFixed(2)} × sin({angleDeg.toFixed(1)}°)
+                    </span>
+
+                    <span style={{ paddingTop: "3px" }}>
+                      {n2.toFixed(2)}
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Calculate */}
+              <div>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    color: "#52656b",
+                    marginBottom: "5px",
+                  }}
+                >
+                  Calculate
+                </div>
+
+                <div
+                  style={{
+                    fontFamily: "Georgia, serif",
+                    fontSize: "15px",
+                    color: "#263b40",
+                  }}
+                >
+                  sin(θ₂) ={" "}
+                  {(
+                    (n1 * Math.sin(rad(angleDeg))) /
+                    n2
+                  ).toFixed(3)}
+                </div>
+              </div>
+
+              {/* Answer */}
+              <div
+                style={{
+                  paddingTop: "10px",
+                  borderTop: "1px solid #d8e2e3",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    color: "#52656b",
+                    marginBottom: "5px",
+                  }}
+                >
+                  Therefore
+                </div>
+
+                <div
+                  style={{
+                    fontFamily: "Georgia, serif",
+                    fontSize: "18px",
+                    fontWeight: 600,
+                    color: "#245b63",
+                  }}
+                >
+                  θ₂ ={" "}
+                  {(
+                    Math.asin(
+                      clamp(
+                        (n1 * Math.sin(rad(angleDeg))) / n2,
+                        -1,
+                        1
+                      )
+                    ) *
+                    180 /
+                    Math.PI
+                  ).toFixed(1)}
+                  °
+                </div>
+              </div>
+            </div>
+          </div>
+
+
 
         </aside>
 
@@ -2515,6 +2704,24 @@ function App() {
 
             <defs>
 
+              <marker
+                id="rayArrow"
+                viewBox="0 0 10 10"
+                refX="8"
+                refY="5"
+                markerWidth="5"
+                markerHeight="5"
+                orient="auto"
+              >
+                <path
+                  d="M 1 1 L 9 5 L 1 9"
+                  fill="none"
+                  stroke="rgba(22,57,67,.65)"
+                  strokeWidth="1.2"
+                  strokeLinejoin="round"
+                />
+              </marker>
+              
               <mask id="incident-wave-mask">
 
                 <rect
@@ -2985,119 +3192,98 @@ function App() {
 
               />
 
+
+              {/* Incident ray */}
               <line
-
-                x1={
-
-                  geometry.front.x -
-
-                  180
-
-                }
-
-                y1={
-
-                  geometry.front.y
-
-                }
-
-                x2={
-
-                  geometry.front.x
-
-                }
-
-                y2={
-
-                  geometry.front.y
-
-                }
-
+                x1={geometry.front.x - 180}
+                y1={geometry.front.y}
+                x2={geometry.front.x - 90}
+                y2={geometry.front.y}
                 stroke="rgba(22,57,67,.55)"
-
                 strokeWidth="3"
-
+                markerEnd="url(#rayArrow)"
               />
 
               <line
+                x1={geometry.front.x - 90}
+                y1={geometry.front.y}
+                x2={geometry.front.x}
+                y2={geometry.front.y}
+                stroke="rgba(22,57,67,.55)"
+                strokeWidth="3"
+              />
 
-                x1={
 
-                  geometry.front.x
-
-                }
-
-                y1={
-
-                  geometry.front.y
-
-                }
-
+              {/* Refracted ray */}
+              <line
+                x1={geometry.front.x}
+                y1={geometry.front.y}
                 x2={
-
                   geometry.front.x +
-
-                  150 *
-
-                    geometry.refracted.x
-
+                  75 * geometry.refracted.x
                 }
-
                 y2={
-
                   geometry.front.y +
-
-                  150 *
-
-                    geometry.refracted.y
-
+                  75 * geometry.refracted.y
                 }
-
                 stroke="rgba(22,57,67,.55)"
-
                 strokeWidth="3"
-
+                markerEnd="url(#rayArrow)"
               />
 
               <line
-
                 x1={
-
-                  geometry.rear.x
-
+                  geometry.front.x +
+                  75 * geometry.refracted.x
                 }
-
                 y1={
-
-                  geometry.rear.y
-
+                  geometry.front.y +
+                  75 * geometry.refracted.y
                 }
-
                 x2={
-
-                  geometry.rear.x +
-
-                  170
-
+                  geometry.front.x +
+                  150 * geometry.refracted.x
                 }
-
                 y2={
-
-                  geometry.rear.y
-
+                  geometry.front.y +
+                  150 * geometry.refracted.y
                 }
-
                 stroke="rgba(22,57,67,.55)"
-
                 strokeWidth="3"
+              />
 
+
+              {/* Transmitted ray */}
+              <line
+                x1={geometry.rear.x}
+                y1={geometry.rear.y}
+                x2={geometry.rear.x + 85}
+                y2={geometry.rear.y}
+                stroke="rgba(22,57,67,.55)"
+                strokeWidth="3"
+                markerEnd="url(#rayArrow)"
+              />
+
+              <line
+                x1={geometry.rear.x + 85}
+                y1={geometry.rear.y}
+                x2={geometry.rear.x + 170}
+                y2={geometry.rear.y}
+                stroke="rgba(22,57,67,.55)"
+                strokeWidth="3"
               />
 
               <text
 
-                x={block.x}
+                x={
+                  geometry.front.x +
+                  190
+                }
 
-                y={block.y + 5}
+                y={
+                  geometry.front.y +
+                  90
+                }
 
                 textAnchor="middle"
 
@@ -3117,23 +3303,23 @@ function App() {
 
                 x={
 
-                  geometry.front.x +
+                  geometry.front.x -
 
-                  13
+                  80
 
                 }
 
                 y={
 
-                  geometry.front.y -
+                  geometry.front.y +
 
-                  16
+                  26
 
                 }
 
                 fill="rgba(20,60,70,.75)"
 
-                fontSize="13"
+                fontSize="18"
 
                 fontWeight="700"
 
@@ -3157,19 +3343,19 @@ function App() {
 
                   geometry.front.x +
 
-                  13
+                  25
 
                 }
 
                 y={
 
-                  geometry.front.y + 3
+                  geometry.front.y - 20
 
                 }
 
                 fill="rgba(20,60,70,.75)"
 
-                fontSize="13"
+                fontSize="18"
 
                 fontWeight="700"
 
@@ -3197,7 +3383,7 @@ function App() {
 
                   BLOCK_H / 2 +
 
-                  30
+                  50
 
                 }
 
@@ -3315,106 +3501,101 @@ function App() {
 
           )}
 
-          <div className="note">
+    <div className="legend">
 
-            The square background is the
+                <div className="legendRow">
 
-            simulation's spatial unit:
+                  <span className="wave" />
 
-            <br />
+                  <span>
 
-            <br />
+                    Wavefronts
 
-            <strong>
+                  </span>
 
-              1 square = {GRID_UNIT_PX} px
+                </div>
 
-            </strong>
+                <div className="legendRow">
 
-            <br />
+                  <span
+                    className="blockChip"
+                    style={{ background: mediumColour(n2, true) }}
+                  />
 
-            <br />
+                  <span>
 
-            Wavelength is measured in
+                    Glass block with n₂
 
-            squares and speed is measured
+                  </span>
 
-            in squares per second. Frequency
+                </div>
 
-            is calculated directly as
+              </div>
 
-            <br />
+              <div className="note">
 
-            <br />
+                The square background is the
 
-            <strong>
+                simulation's spatial unit:
 
-              f = speed ÷ wavelength
+                <br />
 
-            </strong>
+                <br />
 
-            <br />
+                <strong>
 
-            <br />
+                  1 square = {GRID_UNIT_PX} px
 
-            so the wave spacing, animation
+                </strong>
 
-            speed, and displayed values all
+                <br />
 
-            use the same spatial scale.
+                <br />
 
-            <br />
+                Wavelength is measured in
 
-            <br />
+                squares and speed is measured
 
-            At the rear face, the phase
+                in squares per second. Frequency
 
-            accumulated through the block is
+                is calculated directly as
 
-            carried into the transmitted
+                <br />
 
-            wave.
+                <br />
 
-          </div>
+                <strong>
 
-          <div className="legend">
+                  frequency = speed ÷ wavelength
 
-            <div className="legendRow">
+                </strong>
 
-              <span className="wave" />
+                <br />
 
-              <span>
+                <br />
 
-                Equal-phase wavefronts
+                so the wave spacing, animation
 
-              </span>
+                speed, and displayed values all
 
-            </div>
+                use the same spatial scale.
 
-            <div className="legendRow">
+                <br />
 
-              <span className="blockChip" />
+                
 
-              <span>
+              </div>
 
-                Medium 2 colour varies
+              
 
-                with n₂
+            </aside>
 
-              </span>
+          </main>
 
-            </div>
+        </div>
 
-          </div>
+      );
 
-        </aside>
+    }
 
-      </main>
-
-    </div>
-
-  );
-
-}
-
-export default App;
+  export default App;
