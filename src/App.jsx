@@ -1,5 +1,5 @@
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const W = 1200;
 
@@ -10,10 +10,21 @@ const BLOCK_W = 270;
 const BLOCK_H = 440;
 
 const GRID_UNIT_PX = 60;
+const INITIAL_BLOCK = { x: 680, y: 360 };
+
+const INITIAL_ANGLE_DEG = 20;
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
 const rad = (deg) => (deg * Math.PI) / 180;
+const WAVE_PHASE_ORIGIN = {
+  x:
+    INITIAL_BLOCK.x -
+    Math.cos(rad(INITIAL_ANGLE_DEG)) * BLOCK_W / 2,
+  y:
+    INITIAL_BLOCK.y -
+    Math.sin(rad(INITIAL_ANGLE_DEG)) * BLOCK_W / 2,
+};
 
 const add = (a, b) => ({ x: a.x + b.x, y: a.y + b.y });
 
@@ -28,6 +39,62 @@ const cross = (a, b) => a.x * b.y - a.y * b.x;
 const len = (a) => Math.hypot(a.x, a.y);
 
 const unit = (a) => mul(a, 1 / (len(a) || 1));
+
+function labelLineClearance(center, halfWidth, halfHeight, start, end) {
+  const direction = unit(sub(end, start));
+  const offset = sub(center, start);
+  return (
+    Math.abs(cross(direction, offset)) -
+    halfWidth * Math.abs(direction.y) -
+    halfHeight * Math.abs(direction.x)
+  );
+}
+
+function placeAngleLabel({
+  origin,
+  normal,
+  tangent,
+  normalOffset,
+  preferredSide,
+  tangentOffsets,
+  text,
+  fontSize,
+  obstacles,
+}) {
+  const halfWidth = text.length * fontSize * 0.29;
+  const halfHeight = fontSize * 0.6;
+  const minClearance = fontSize * 0.2;
+  let bestPosition = null;
+  let bestClearance = -Infinity;
+
+  for (const offset of tangentOffsets) {
+    for (const side of [preferredSide, -preferredSide]) {
+      const position = add(
+        add(origin, mul(normal, normalOffset)),
+        mul(tangent, side * offset)
+      );
+      const clearance = Math.min(
+        ...obstacles.map(({ start, end }) =>
+          labelLineClearance(
+            position,
+            halfWidth,
+            halfHeight,
+            start,
+            end
+          )
+        )
+      );
+
+      if (clearance > bestClearance) {
+        bestPosition = position;
+        bestClearance = clearance;
+      }
+      if (clearance >= minClearance) return position;
+    }
+  }
+
+  return bestPosition;
+}
 
 function fmt(value, digits = 2) {
 
@@ -475,15 +542,15 @@ function App() {
 
   const [angleDeg, setAngleDeg] =
 
-    useState(20);
+  useState(INITIAL_ANGLE_DEG);
 
   const [zoom, setZoom] =
 
-    useState(1);
+    useState(1.4);
 
   const [block, setBlock] =
 
-    useState({ x: 830, y: 360 });
+  useState(INITIAL_BLOCK);
 
   const [phase, setPhase] =
 
@@ -493,7 +560,21 @@ function App() {
 
     useState(false);
 
+  const [raysVisible, setRaysVisible] =
+
+    useState(true);
+
+  const [isStageMaximized, setIsStageMaximized] =
+
+    useState(false);
+
+  const [isDragging, setIsDragging] =
+
+    useState(false);
+
   const drag = useRef(null);
+
+  const simRef = useRef(null);
 
   const frequency =
 
@@ -671,6 +752,16 @@ function App() {
 
       front;
 
+    const frontPhaseOffset =
+
+      dot(
+
+        incident,
+
+        sub(front, WAVE_PHASE_ORIGIN)
+
+      ) / lambda1Px;
+
     const blockNormalDistance =
 
       dot(
@@ -688,6 +779,8 @@ function App() {
       lambda2Px;
 
     const transmittedPhaseOffset =
+
+      frontPhaseOffset +
 
       phaseThroughBlock;
 
@@ -766,7 +859,6 @@ function App() {
     const refractedClipPolygon = [
 
       points[0],
-
       add(
 
         points[0],
@@ -840,7 +932,6 @@ function App() {
         sub(points[1], origin);
 
       const t =
-
         cross(
 
           rel,
@@ -899,6 +990,10 @@ function App() {
 
       ) || points[2];
 
+    const refractedExit =
+
+      findRearIntersection(front) || rear;
+
     const shadowLength =
 
       W + BLOCK_W + 200;
@@ -943,6 +1038,8 @@ function App() {
 
       rear,
 
+      refractedExit,
+
       frontTop,
 
       frontBottom,
@@ -956,6 +1053,7 @@ function App() {
       lambda2Px,
 
       frontPhaseOrigin,
+  frontPhaseOffset,
 
       transmittedPhaseOffset,
 
@@ -1013,6 +1111,55 @@ function App() {
 
     wavelengthSquares;
 
+  const materialLabel = sub(
+    sub(
+      geometry.rearBottom,
+      mul(geometry.ux, 18)
+    ),
+    mul(geometry.uy, 24)
+  );
+  const angleLabelSide = angleDeg < 0 ? -1 : 1;
+  const angleLabelFontSize =
+    (22 + zoom * 4) / zoom;
+  const incidentAngleText =
+    `θ₁ ${geometry.theta1.toFixed(1)}°`;
+  const refractedAngleText =
+    `θ₂ ${geometry.theta2.toFixed(1)}°`;
+  const incidentRay = {
+    start: sub(geometry.front, mul(geometry.incident, 180)),
+    end: geometry.front,
+  };
+  const refractedRay = {
+    start: geometry.front,
+    end: geometry.refractedExit,
+  };
+  const normalLine = {
+    start: sub(geometry.front, mul(geometry.ux, 125)),
+    end: add(geometry.front, mul(geometry.ux, 125)),
+  };
+  const incidentAngleLabel = placeAngleLabel({
+    origin: geometry.front,
+    normal: mul(geometry.ux, -1),
+    tangent: geometry.uy,
+    normalOffset: 80,
+    preferredSide: angleLabelSide,
+    tangentOffsets: [44, 64, 84, 104],
+    text: incidentAngleText,
+    fontSize: angleLabelFontSize,
+    obstacles: [incidentRay, normalLine],
+  });
+  const refractedAngleLabel = placeAngleLabel({
+    origin: geometry.front,
+    normal: geometry.ux,
+    tangent: geometry.uy,
+    normalOffset: 45,
+    preferredSide: -angleLabelSide,
+    tangentOffsets: [54, 74, 94, 114],
+    text: refractedAngleText,
+    fontSize: angleLabelFontSize,
+    obstacles: [refractedRay, normalLine],
+  });
+
   React.useEffect(() => {
 
     let frame;
@@ -1061,6 +1208,43 @@ function App() {
 
   }, [paused]);
 
+  React.useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.code === "Escape") {
+        setIsStageMaximized(false);
+        return;
+      }
+
+      const target = event.target;
+      if (
+        target instanceof Element &&
+        target.closest(
+          'button, input, textarea, select, [contenteditable="true"]'
+        )
+      ) {
+        return;
+      }
+
+      if (event.code === "Comma" || event.code === "Period") {
+        event.preventDefault();
+        const direction = event.code === "Comma" ? -1 : 1;
+        setAngleDeg((current) =>
+          clamp(current + direction * 0.5, -65, 65)
+        );
+        return;
+      }
+
+      if (event.code !== "Space" || event.repeat) return;
+
+      event.preventDefault();
+      setPaused((current) => !current);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () =>
+      window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const temporalPhase =
 
     phase *
@@ -1083,7 +1267,7 @@ function App() {
 
       phaseOrigin:
 
-        geometry.frontPhaseOrigin,
+        WAVE_PHASE_ORIGIN,
 
       bounds: {
 
@@ -1120,6 +1304,10 @@ function App() {
       phaseOrigin:
 
         geometry.frontPhaseOrigin,
+
+      phaseOffset:
+
+        geometry.frontPhaseOffset,
 
       bounds: {
 
@@ -1213,33 +1401,17 @@ function App() {
 
       event.currentTarget;
 
-    const rect =
+    const svgPoint = svg.createSVGPoint();
 
-      svg.getBoundingClientRect();
+    svgPoint.x = event.clientX;
 
-    const sx =
+    svgPoint.y = event.clientY;
 
-      W / rect.width;
+    const { x, y } = svgPoint.matrixTransform(
 
-    const sy =
+      svg.getScreenCTM().inverse()
 
-      H / rect.height;
-
-    const x =
-
-      (event.clientX -
-
-        rect.left) *
-
-      sx;
-
-    const y =
-
-      (event.clientY -
-
-        rect.top) *
-
-      sy;
+    );
 
     return {
 
@@ -1258,6 +1430,32 @@ function App() {
     };
 
   };
+
+  const onWheel = (event) => {
+
+    event.preventDefault();
+
+    const delta = event.deltaMode === 1
+      ? event.deltaY * 16
+      : event.deltaMode === 2
+        ? event.deltaY * window.innerHeight
+        : event.deltaY;
+
+    setZoom((currentZoom) =>
+      clamp(currentZoom * Math.exp(-delta * 0.005), 1, 4)
+    );
+
+  };
+
+  useEffect(() => {
+    const svg = simRef.current;
+
+    if (!svg) return undefined;
+
+    svg.addEventListener("wheel", onWheel, { passive: false });
+
+    return () => svg.removeEventListener("wheel", onWheel);
+  }, [onWheel]);
 
   const isInsideBlock = (p) => {
 
@@ -1299,6 +1497,11 @@ function App() {
 
   };
 
+  const rotationHandlePosition = add(
+    geometry.points[2],
+    mul(unit(add(geometry.ux, geometry.uy)), 26)
+  );
+
   const onPointerDown =
 
     (event) => {
@@ -1306,6 +1509,38 @@ function App() {
       const p =
 
         pointerToWorld(event);
+
+      if (len(sub(p, rotationHandlePosition)) <= 24) {
+
+        event.currentTarget.setPointerCapture(
+
+          event.pointerId
+
+        );
+
+        drag.current = {
+
+          id: event.pointerId,
+
+          mode: "rotate",
+
+          startAngle: angleDeg,
+
+          startPointerAngle: Math.atan2(
+
+            p.y - block.y,
+
+            p.x - block.x
+
+          ),
+
+        };
+
+        setIsDragging(true);
+
+        return;
+
+      }
 
       if (
 
@@ -1327,6 +1562,8 @@ function App() {
 
         id: event.pointerId,
 
+        mode: "move",
+
         offset: sub(
 
           p,
@@ -1336,6 +1573,8 @@ function App() {
         ),
 
       };
+
+      setIsDragging(true);
 
     };
 
@@ -1360,6 +1599,42 @@ function App() {
       const p =
 
         pointerToWorld(event);
+
+      if (drag.current.mode === "rotate") {
+
+        const pointerAngle = Math.atan2(
+
+          p.y - block.y,
+
+          p.x - block.x
+
+        );
+
+        let angleDelta =
+
+          pointerAngle - drag.current.startPointerAngle;
+
+        while (angleDelta > Math.PI) angleDelta -= 2 * Math.PI;
+
+        while (angleDelta < -Math.PI) angleDelta += 2 * Math.PI;
+
+        setAngleDeg(
+
+          clamp(
+
+            drag.current.startAngle + angleDelta * 180 / Math.PI,
+
+            -65,
+
+            65
+
+          )
+
+        );
+
+        return;
+
+      }
 
       setBlock({
 
@@ -1416,6 +1691,8 @@ function App() {
       }
 
       drag.current = null;
+
+      setIsDragging(false);
 
       try {
 
@@ -1575,11 +1852,73 @@ function App() {
 
           display: flex;
 
-          justify-content: space-between;
+          justify-content: center;
 
           align-items: center;
 
           gap: 18px;
+
+          position: relative;
+
+        }
+
+        .topIdentity {
+
+          display: flex;
+
+          align-items: center;
+
+          gap: 14px;
+
+          justify-content: center;
+
+          width: 100%;
+
+          padding: 0 56px;
+
+          box-sizing: border-box;
+
+          text-align: center;
+
+        }
+
+        .homeLink {
+
+          display: inline-flex;
+
+          flex: 0 0 auto;
+
+          position: absolute;
+
+          left: 0;
+
+          top: 50%;
+
+          transform: translateY(-50%);
+
+          width: 46px;
+
+          height: 46px;
+
+          border-radius: 11px;
+
+        }
+
+        .homeLink img {
+
+          display: block;
+
+          width: 100%;
+
+          height: 100%;
+
+        }
+
+        .homeLink:focus-visible {
+
+          outline: 3px solid #2f7883;
+
+          outline-offset: 3px;
 
         }
 
@@ -1597,7 +1936,7 @@ function App() {
 
         .sub {
 
-          margin: 5px 0 0;
+          margin: 5px auto 0;
 
           max-width: 780px;
 
@@ -1659,6 +1998,64 @@ function App() {
 
         }
 
+        .hotkeys {
+
+          order: 4;
+
+          grid-column: 1 / -1;
+
+          display: flex;
+
+          justify-content: center;
+
+          align-items: center;
+
+          flex-wrap: wrap;
+
+          gap: 8px 18px;
+
+          padding: 8px 12px;
+
+          color: #607980;
+
+          font-size: 12px;
+
+        }
+
+        .hotkeys span {
+
+          display: inline-flex;
+
+          align-items: center;
+
+          gap: 6px;
+
+          white-space: nowrap;
+
+        }
+
+        .hotkeys kbd {
+
+          min-width: 22px;
+
+          padding: 3px 6px;
+
+          border: 1px solid rgba(38,72,81,.2);
+
+          border-bottom-width: 2px;
+
+          border-radius: 5px;
+
+          background: rgba(255,255,255,.78);
+
+          color: #245766;
+
+          font: 700 11px/1.1 inherit;
+
+          text-align: center;
+
+        }
+
         .card {
 
           min-width: 0;
@@ -1687,6 +2084,8 @@ function App() {
 
         .stage {
 
+          position: relative;
+
           min-height: 0;
 
           height: 520px;
@@ -1709,11 +2108,18 @@ function App() {
 
           user-select: none;
 
+        }
+
+        .blockShape,
+        .rotationHandleHitArea {
+
           cursor: grab;
 
         }
 
-        .sim:active {
+        .sim.isDragging,
+        .sim.isDragging .blockShape,
+        .sim.isDragging .rotationHandleHitArea {
 
           cursor: grabbing;
 
@@ -1734,6 +2140,104 @@ function App() {
           overflow-y: auto;
 
           overflow-x: hidden;
+
+        }
+
+        .panelExpandButton {
+
+          position: absolute;
+
+          top: 12px;
+
+          left: 12px;
+
+          z-index: 1;
+
+          display: grid;
+
+          place-items: center;
+
+          width: 32px;
+
+          height: 32px;
+
+          padding: 0;
+
+          border: 1px solid rgba(49,79,88,.18);
+
+          border-radius: 8px;
+
+          background: #fff;
+
+          color: #245766;
+
+          cursor: pointer;
+
+        }
+
+        .panelExpandButton:hover {
+
+          background: #edf6f7;
+
+        }
+
+        .panelExpandButton:focus-visible {
+
+          outline: 2px solid #245766;
+
+          outline-offset: 2px;
+
+        }
+
+        .panelExpandButton svg {
+
+          width: 17px;
+
+          height: 17px;
+
+          fill: none;
+
+          stroke: currentColor;
+
+          stroke-width: 1.8;
+
+          stroke-linecap: round;
+
+          stroke-linejoin: round;
+
+        }
+
+        .layout.isStageMaximized {
+
+          position: fixed;
+
+          inset: 0;
+
+          z-index: 1000;
+
+          display: block;
+
+          padding: 16px;
+
+          background: linear-gradient(135deg, #eef7f8, #dce9ed);
+
+        }
+
+        .layout.isStageMaximized > :not(.stage) {
+
+          display: none;
+
+        }
+
+        .layout.isStageMaximized .stage {
+
+          width: 100%;
+
+          height: 100%;
+
+          max-height: none;
+
+          border-radius: 12px;
 
         }
 
@@ -1846,6 +2350,92 @@ function App() {
         .pauseButton:hover {
 
           background: #e3f1f3;
+
+        }
+
+        .rayToggleRow {
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: space-between;
+
+          gap: 10px;
+
+          padding: 2px 1px;
+
+          color: #35545c;
+
+          font-size: 11px;
+
+          font-weight: 750;
+
+        }
+
+        .rayToggle {
+
+          position: relative;
+
+          flex: 0 0 auto;
+
+          width: 48px;
+
+          height: 27px;
+
+          padding: 3px;
+
+          border: 1px solid #8a9ca0;
+
+          border-radius: 999px;
+
+          background: #e2e9ea;
+
+          cursor: pointer;
+
+          transition: background 160ms ease, border-color 160ms ease;
+
+        }
+
+        .rayToggle.isOn {
+
+          border-color: #246f70;
+
+          background: #2d8581;
+
+        }
+
+        .rayToggle:focus-visible {
+
+          outline: 2px solid #245766;
+
+          outline-offset: 2px;
+
+        }
+
+        .rayToggleThumb {
+
+          display: block;
+
+          width: 19px;
+
+          height: 19px;
+
+          border-radius: 50%;
+
+          background: #fff;
+
+          box-shadow: 0 1px 3px rgba(18, 48, 54, .28);
+
+          transform: translateX(0);
+
+          transition: transform 160ms ease;
+
+        }
+
+        .rayToggle.isOn .rayToggleThumb {
+
+          transform: translateX(21px);
 
         }
 
@@ -2161,7 +2751,23 @@ function App() {
 
       <header className="top">
 
-        <div>
+        <div className="topIdentity">
+
+          <a
+
+            className="homeLink"
+
+            href="https://awm11.github.io/"
+
+            aria-label="AWM11 home"
+
+          >
+
+            <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" />
+
+          </a>
+
+          <div>
 
           <h1 style={{ color: "gray" }}>
             Plane-wave refraction
@@ -2171,21 +2777,19 @@ function App() {
 
             Drag the block, rotate its
 
-            boundary, or tune the wave
+            boundary, or adjust the wave
 
             and material properties.
 
-            Frequency is determined by
-
-            speed ÷ wavelength.
-
           </p>
+
+          </div>
 
         </div>
 
       </header>
 
-      <main className="layout">
+      <main className={`layout${isStageMaximized ? " isStageMaximized" : ""}`}>
 
         <aside className="card controls wavePanel">
 
@@ -2216,6 +2820,36 @@ function App() {
               : "Ⅱ Pause"}
 
           </button>
+
+          <div className="rayToggleRow">
+
+            <span>Show rays &amp; angles</span>
+
+            <button
+
+              type="button"
+
+              role="switch"
+
+              className={`rayToggle${raysVisible ? " isOn" : ""}`}
+
+              aria-label="Show rays and angles"
+
+              aria-checked={raysVisible}
+
+              onClick={() =>
+
+                setRaysVisible((visible) => !visible)
+
+              }
+
+            >
+
+              <span className="rayToggleThumb" />
+
+            </button>
+
+          </div>
 
           {control(
 
@@ -2420,12 +3054,6 @@ function App() {
                 °
 
               </strong>
-
-              <small>
-
-                θ₁ → θ₂
-
-              </small>
 
             </div>
 
@@ -2668,9 +3296,46 @@ function App() {
 
         <section className="card stage">
 
+          <button
+
+            type="button"
+
+            className="panelExpandButton"
+
+            aria-label={isStageMaximized ? "Restore simulation pane" : "Maximize simulation pane"}
+
+            title={isStageMaximized ? "Restore simulation pane" : "Maximize simulation pane"}
+
+            onClick={(event) => {
+              setIsStageMaximized((maximized) => !maximized);
+              event.currentTarget.blur();
+            }}
+
+          >
+
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+
+              {isStageMaximized ? (
+
+                <path d="M7 3v4H3M13 3v4h4M7 17v-4H3m10 4v-4h4" />
+
+              ) : (
+
+                <path d="M3 7V3h4M13 3h4v4M17 13v4h-4M7 17H3v-4" />
+
+              )}
+
+            </svg>
+
+          </button>
+
           <svg
 
-            className="sim"
+            ref={simRef}
+
+            className={
+              isDragging ? "sim isDragging" : "sim"
+            }
 
             viewBox={`0 0 ${W} ${H}`}
 
@@ -2974,6 +3639,8 @@ function App() {
 
               <polygon
 
+                className="blockShape"
+
                 points={geometry.points
 
                   .map(
@@ -3001,6 +3668,7 @@ function App() {
               />
 
               <line
+                className="blockShape"
 
                 x1={geometry.points[0].x}
 
@@ -3017,6 +3685,7 @@ function App() {
               />
 
               <line
+                className="blockShape"
 
                 x1={geometry.points[2].x}
 
@@ -3049,6 +3718,7 @@ function App() {
               </g>
 
               {/* Angle shading at first boundary */}
+              <g display={raysVisible ? "inline" : "none"}>
 
               <path
 
@@ -3093,6 +3763,8 @@ function App() {
                 strokeWidth="1.5"
 
               />
+
+              </g>
 
               <line
 
@@ -3190,8 +3862,12 @@ function App() {
 
                 strokeDasharray="8 8"
 
+                display={raysVisible ? "inline" : "none"}
+
               />
 
+
+              <g display={raysVisible ? "inline" : "none"}>
 
               {/* Incident ray */}
               <line
@@ -3241,12 +3917,10 @@ function App() {
                   75 * geometry.refracted.y
                 }
                 x2={
-                  geometry.front.x +
-                  150 * geometry.refracted.x
+                  geometry.refractedExit.x
                 }
                 y2={
-                  geometry.front.y +
-                  150 * geometry.refracted.y
+                  geometry.refractedExit.y
                 }
                 stroke="rgba(22,57,67,.55)"
                 strokeWidth="3"
@@ -3255,74 +3929,48 @@ function App() {
 
               {/* Transmitted ray */}
               <line
-                x1={geometry.rear.x}
-                y1={geometry.rear.y}
-                x2={geometry.rear.x + 85}
-                y2={geometry.rear.y}
+                x1={geometry.refractedExit.x}
+                y1={geometry.refractedExit.y}
+                x2={geometry.refractedExit.x + 85}
+                y2={geometry.refractedExit.y}
                 stroke="rgba(22,57,67,.55)"
                 strokeWidth="3"
                 markerEnd="url(#rayArrow)"
               />
 
               <line
-                x1={geometry.rear.x + 85}
-                y1={geometry.rear.y}
-                x2={geometry.rear.x + 170}
-                y2={geometry.rear.y}
+                x1={geometry.refractedExit.x + 85}
+                y1={geometry.refractedExit.y}
+                x2={geometry.refractedExit.x + 170}
+                y2={geometry.refractedExit.y}
                 stroke="rgba(22,57,67,.55)"
                 strokeWidth="3"
               />
 
+              </g>
+
               <text
-
-                x={
-                  geometry.front.x +
-                  190
-                }
-
-                y={
-                  geometry.front.y +
-                  90
-                }
-
-                textAnchor="middle"
-
+                x={materialLabel.x}
+                y={materialLabel.y}
+                transform={`rotate(${angleDeg} ${materialLabel.x} ${materialLabel.y})`}
+                textAnchor="end"
                 fill="rgba(20,60,70,.82)"
-
                 fontSize="17"
-
                 fontWeight="750"
-
               >
 
                 n₂ = {n2.toFixed(2)}
 
               </text>
 
+              <g display={raysVisible ? "inline" : "none"}>
               <text
-
-                x={
-
-                  geometry.front.x -
-
-                  80
-
-                }
-
-                y={
-
-                  geometry.front.y +
-
-                  26
-
-                }
-
+                x={incidentAngleLabel.x}
+                y={incidentAngleLabel.y}
+                textAnchor="middle"
                 fill="rgba(20,60,70,.75)"
-
-                fontSize="18"
-
+                fontSize={angleLabelFontSize}
                 fontWeight="700"
-
               >
 
                 θ₁{" "}
@@ -3338,27 +3986,12 @@ function App() {
               </text>
 
               <text
-
-                x={
-
-                  geometry.front.x +
-
-                  25
-
-                }
-
-                y={
-
-                  geometry.front.y - 20
-
-                }
-
+                x={refractedAngleLabel.x}
+                y={refractedAngleLabel.y}
+                textAnchor="middle"
                 fill="rgba(20,60,70,.75)"
-
-                fontSize="18"
-
+                fontSize={angleLabelFontSize}
                 fontWeight="700"
-
               >
 
                 θ₂{" "}
@@ -3373,32 +4006,52 @@ function App() {
 
               </text>
 
+              </g>
+
+              
+
+              <polygon
+                className="blockShape"
+                points={geometry.points
+                  .map((p) => `${p.x},${p.y}`)
+                  .join(" ")}
+                fill="transparent"
+                pointerEvents="all"
+              />
+              <circle
+                className="rotationHandleHitArea"
+                cx={rotationHandlePosition.x}
+                cy={rotationHandlePosition.y}
+                r="24"
+                fill="transparent"
+              />
+              <line
+                x1={geometry.points[2].x}
+                y1={geometry.points[2].y}
+                x2={rotationHandlePosition.x}
+                y2={rotationHandlePosition.y}
+                stroke="#245b63"
+                strokeWidth="2"
+              />
+              <circle
+                className="rotationHandleHitArea"
+                cx={rotationHandlePosition.x}
+                cy={rotationHandlePosition.y}
+                r="16"
+                fill="#ffffff"
+                stroke="#245b63"
+                strokeWidth="2.5"
+              />
               <text
-
-                x={block.x}
-
-                y={
-
-                  block.y +
-
-                  BLOCK_H / 2 +
-
-                  50
-
-                }
-
+                x={rotationHandlePosition.x}
+                y={rotationHandlePosition.y + 6}
                 textAnchor="middle"
-
-                fill="rgba(20,60,70,.6)"
-
-                fontSize="12"
-
-                fontWeight="650"
-
+                fill="#245b63"
+                fontSize="20"
+                fontWeight="700"
+                pointerEvents="none"
               >
-
-                drag block
-
+                ↻
               </text>
 
             </g>
@@ -3487,7 +4140,7 @@ function App() {
 
             1,
 
-            3,
+            4,
 
             0.01,
 
@@ -3524,7 +4177,7 @@ function App() {
 
                   <span>
 
-                    Glass block with n₂
+                    Block with n₂
 
                   </span>
 
@@ -3589,6 +4242,20 @@ function App() {
               
 
             </aside>
+
+        <div className="hotkeys" aria-label="Keyboard shortcuts">
+
+          <span><kbd>Space</kbd> Pause / resume</span>
+
+          <span><kbd>Esc</kbd> Exit maximize</span>
+
+          <span><kbd>,</kbd> Rotate anti-clockwise</span>
+
+          <span><kbd>.</kbd> Rotate clockwise</span>
+
+          <span><span aria-hidden="true">🔍</span> Pinch trackpad / scroll mouse wheel to zoom</span>
+
+        </div>
 
           </main>
 
