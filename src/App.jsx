@@ -1483,6 +1483,12 @@ function RefractionSimulation() {
 
         }
 
+        .wavefrontGroup {
+
+          will-change: transform;
+
+        }
+
         .blockShape,
         .rotationHandleHitArea {
 
@@ -2735,7 +2741,7 @@ function RefractionSimulation() {
               </g>
 
               <g mask="url(#incident-wave-mask)">
-                <g ref={incidentWaveRef}>
+                <g className="wavefrontGroup" ref={incidentWaveRef}>
                   {incidentRows.map((line) => (
                     <line
                       key={line.key}
@@ -2805,7 +2811,7 @@ function RefractionSimulation() {
 
               <g clipPath="url(#refracted-ray-clip)">
                 <g clipPath="url(#refracted-block-clip)">
-                  <g ref={internalWaveRef}>
+                  <g className="wavefrontGroup" ref={internalWaveRef}>
                     {internalRows.map((line) => (
                       <line
                         key={line.key}
@@ -2823,7 +2829,7 @@ function RefractionSimulation() {
               </g>
 
               <g clipPath="url(#transmitted-wave-clip)">
-                <g ref={transmittedWaveRef}>
+                <g className="wavefrontGroup" ref={transmittedWaveRef}>
                   {transmittedRows.map((line) => (
                     <line
                       key={line.key}
