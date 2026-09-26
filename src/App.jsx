@@ -3291,14 +3291,27 @@ function RefractionSimulation() {
 function App() {
   const basePath = import.meta.env.BASE_URL.replace(/\/+$/, "");
   const currentPath = window.location.pathname.replace(/\/+$/, "");
+  const [hashRoute, setHashRoute] = useState(() => window.location.hash);
 
-  if (currentPath === `${basePath}/refraction`) return <RefractionSimulation />;
-  if (currentPath === `${basePath}/reflection`) return <ReflectionApp />;
+  useEffect(() => {
+    const onHashChange = () => setHashRoute(window.location.hash);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  const route = hashRoute.replace(/^#\/?/, "").replace(/\/+$/, "");
+
+  if (route === "refraction" || currentPath === `${basePath}/refraction`) {
+    return <RefractionSimulation />;
+  }
+  if (route === "reflection" || currentPath === `${basePath}/reflection`) {
+    return <ReflectionApp />;
+  }
 
   return (
     <LandingPage
-      refractionPath={`${basePath}/refraction/`}
-      reflectionPath={`${basePath}/reflection/`}
+      refractionPath={`${basePath}/#refraction`}
+      reflectionPath={`${basePath}/#reflection`}
     />
   );
 }
