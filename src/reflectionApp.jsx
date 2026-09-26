@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import BuyMeCoffeeButton from "./BuyMeCoffeeButton.jsx";
 
 const W = 1200;
@@ -240,6 +240,7 @@ function Arrow({
   y1,
   x2,
   y2,
+  stroke = "#245766",
   className = "rayArrow",
 }) {
   return (
@@ -249,6 +250,8 @@ function Arrow({
       y1={y1}
       x2={x2}
       y2={y2}
+      stroke={stroke}
+      strokeWidth="3.5"
       markerEnd="url(#arrow)"
     />
   );
@@ -271,11 +274,9 @@ function App() {
   const [paused, setPaused] = useState(false);
   const [showRays, setShowRays] = useState(true);
   const [showAngles, setShowAngles] = useState(true);
-  const [zoom, setZoom] = useState(1.55);
+  const [showWavefronts, setShowWavefronts] = useState(true);
+  const [showLegend, setShowLegend] = useState(true);
   const [maximized, setMaximized] = useState(false);
-  const zoomFloor = maximized ? 1 : 1.5;
-
-  const svgRef = useRef(null);
 
   const geometry = useMemo(() => {
     const theta = rad(angleDeg);
@@ -433,6 +434,26 @@ function App() {
       incidentBottom,
       reflectedTop,
       reflectedBottom,
+      incidentRay: clipSegmentToRect(
+        [
+          add(hit, mul(incident, -2000)),
+          hit,
+        ],
+        0,
+        0,
+        WALL_X,
+        H
+      ),
+      reflectedRay: clipSegmentToRect(
+        [
+          hit,
+          add(hit, mul(reflected, 2000)),
+        ],
+        0,
+        0,
+        WALL_X,
+        H
+      ),
       tangentIncident,
       tangentReflected,
       normalLine,
@@ -447,42 +468,6 @@ function App() {
       )}°`,
     };
   }, [angleDeg, beamWidth]);
-
-  const onWheel = (event) => {
-    event.preventDefault();
-
-    const delta =
-      event.deltaMode === 1
-        ? event.deltaY * 16
-        : event.deltaY;
-
-    setZoom((current) =>
-      clamp(
-        current *
-          Math.exp(-delta * 0.004),
-        zoomFloor,
-        3.25
-      )
-    );
-  };
-
-  useEffect(() => {
-    const svg = svgRef.current;
-
-    if (!svg) return undefined;
-
-    svg.addEventListener(
-      "wheel",
-      onWheel,
-      { passive: false }
-    );
-
-    return () =>
-      svg.removeEventListener(
-        "wheel",
-        onWheel
-      );
-  });
 
   useEffect(() => {
     let frame;
@@ -518,7 +503,6 @@ function App() {
       if (event.code === "Escape") {
         if (maximized) {
           setMaximized(false);
-          setZoom(1.5);
         }
         return;
       }
@@ -612,6 +596,42 @@ function App() {
     y: -Math.sin(labelAngle),
   };
 
+  const incidentBeamLabelPosition =
+    add(
+      geometry.hit,
+      add(
+        mul(
+          geometry.incident,
+          -180
+        ),
+        mul(
+          unit({
+            x: -geometry.incident.y,
+            y: geometry.incident.x,
+          }),
+          16
+        )
+      )
+    );
+
+  const reflectedBeamLabelPosition =
+    add(
+      geometry.hit,
+      add(
+        mul(
+          geometry.reflected,
+          180
+        ),
+        mul(
+          unit({
+            x: -geometry.reflected.y,
+            y: geometry.reflected.x,
+          }),
+          16
+        )
+      )
+    );
+
   const incidenceLabelPosition =
     add(
       geometry.hit,
@@ -664,7 +684,7 @@ function App() {
     setPaused(false);
     setShowRays(true);
     setShowAngles(true);
-    setZoom(zoomFloor);
+    setShowWavefronts(true);
   };
 
   const control = (
@@ -760,6 +780,11 @@ function App() {
           text-align: center;
         }
 
+        .titleBlock h1 {
+          padding: 8px 14px;
+          color: #666;
+        }
+
         .brandDot {
           position: absolute;
           left: 0;
@@ -834,7 +859,7 @@ function App() {
           min-width: 0;
           min-height: 0;
           display: grid;
-          grid-template-columns: 278px minmax(0,1fr) 292px;
+          grid-template-columns: 278px minmax(0,1fr);
           gap: 12px;
           align-items: stretch;
         }
@@ -842,14 +867,22 @@ function App() {
         .hotkeys {
           order: 4;
           grid-column: 1 / -1;
+          position: relative;
           display: flex;
           justify-content: center;
           align-items: center;
           flex-wrap: wrap;
           gap: 8px 18px;
-          padding: 8px 12px;
+          padding: 8px 174px 8px 12px;
           color: #607980;
           font-size: 12px;
+        }
+
+        .hotkeys > .coffee-embed-frame {
+          position: absolute;
+          top: 50%;
+          right: 12px;
+          transform: translateY(-50%);
         }
 
         .hotkeys span {
@@ -906,6 +939,10 @@ function App() {
           overflow-x: hidden;
         }
 
+        .wavePanel {
+          overflow: hidden;
+        }
+
         .section {
           margin-top: 1px;
           color: #648089;
@@ -920,6 +957,12 @@ function App() {
           padding-top: 9px;
         }
 
+        .sliderGrid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+
         .controlHead {
           display: flex;
           align-items: center;
@@ -929,7 +972,7 @@ function App() {
         }
 
         .controlHead label {
-          font-size: 11px;
+          font-size: 10px;
           line-height: 1.25;
           font-weight: 680;
         }
@@ -940,27 +983,34 @@ function App() {
           border-radius: 7px;
           background: #edf6f7;
           color: #295a67;
-          font-size: 9px;
+          font-size: 8px;
           font-weight: 800;
           font-variant-numeric: tabular-nums;
         }
 
         input[type=range] {
           width: 100%;
+          height: 14.4px;
           margin: 0;
           accent-color: #2f7384;
         }
 
         .pauseButton {
           width: 100%;
-          padding: 9px 10px;
+          padding: 8.1px 10px;
           border: 1px solid #2a6168;
           border-radius: 9px;
           background: #edf6f7;
           color: #245766;
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 800;
           cursor: pointer;
+        }
+
+        .actionGrid {
+          display:grid;
+          grid-template-columns:repeat(2, minmax(0, 1fr));
+          gap:10px;
         }
 
         .pauseButton:hover {
@@ -969,12 +1019,12 @@ function App() {
 
         .resetButton {
           width: 100%;
-          padding: 8px 10px;
+          padding: 7.2px 10px;
           border: 1px solid rgba(49,79,88,.16);
           border-radius: 9px;
           background: rgba(255,255,255,.65);
           color: #4b6972;
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 760;
           cursor: pointer;
         }
@@ -985,21 +1035,31 @@ function App() {
 
         .toggleRow {
           display:flex;
+          flex-direction:column;
           align-items:center;
-          justify-content:space-between;
-          gap:10px;
-          padding:2px 1px;
+          justify-content:flex-start;
+          gap:3px;
+          min-width:0;
+          padding:0 1px;
           color:#35545c;
-          font-size:11px;
+          font-size:8px;
           font-weight:750;
+          line-height:10px;
+          white-space:nowrap;
+        }
+
+        .toggleGrid {
+          display:grid;
+          grid-template-columns:repeat(3, minmax(0, 1fr));
+          gap:6px;
         }
 
         .toggle {
           position:relative;
           flex:0 0 auto;
-          width:48px;
-          height:27px;
-          padding:3px;
+          width:34px;
+          height:18px;
+          padding:2px;
           border:1px solid #8a9ca0;
           border-radius:999px;
           background:#e2e9ea;
@@ -1019,8 +1079,8 @@ function App() {
 
         .toggleThumb {
           display:block;
-          width:19px;
-          height:19px;
+          width:12px;
+          height:12px;
           border-radius:50%;
           background:#fff;
           box-shadow:0 1px 3px rgba(18,48,54,.28);
@@ -1029,7 +1089,7 @@ function App() {
         }
 
         .toggle.isOn .toggleThumb {
-          transform:translateX(21px);
+          transform:translateX(14px);
         }
 
         .metrics {
@@ -1070,16 +1130,6 @@ function App() {
           font-weight:650;
         }
 
-        .note {
-          padding:9px 10px;
-          border:1px dashed rgba(49,79,88,.16);
-          border-radius:10px;
-          background:#f8fbfb;
-          color:#657a81;
-          font-size:10px;
-          line-height:1.4;
-        }
-
         .legend {
           display:flex;
           flex-direction:column;
@@ -1116,9 +1166,55 @@ function App() {
           border-top:2px dashed #7e9197;
         }
 
+        .legendWindow {
+          position:absolute;
+          top:54px;
+          right:12px;
+          z-index:4;
+          width:min(250px, calc(100% - 24px));
+          padding:12px;
+          border:1px solid rgba(38,72,81,.18);
+          border-radius:8px;
+          background:rgba(255,255,255,.96);
+          box-shadow:0 10px 28px rgba(47,76,85,.2);
+        }
+
+        .legendHeader {
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          gap:12px;
+          margin-bottom:10px;
+          color:#193b45;
+          font-size:12px;
+          font-weight:800;
+        }
+
+        .legendClose {
+          display:grid;
+          place-items:center;
+          width:26px;
+          height:26px;
+          padding:0;
+          border:1px solid rgba(49,79,88,.18);
+          border-radius:6px;
+          background:#fff;
+          color:#245766;
+          cursor:pointer;
+        }
+
+        .legendClose svg {
+          width:15px;
+          height:15px;
+          fill:none;
+          stroke:currentColor;
+          stroke-width:1.8;
+          stroke-linecap:round;
+        }
+
         .formula {
           margin-top:4px;
-          padding:16px;
+          padding:16px 16px 4px;
           background:#f5f8f8;
           border:1px solid #d8e2e3;
           border-radius:10px;
@@ -1256,28 +1352,12 @@ function App() {
           }
 
           .layout {
-            grid-template-columns:220px minmax(0,1fr) 270px;
+            grid-template-columns:220px minmax(0,1fr);
             gap:10px;
           }
 
           .controls {
             padding:12px;
-          }
-        }
-
-        @media (max-width:1000px) {
-          .layout {
-            grid-template-columns:225px minmax(0,1fr);
-          }
-
-          .rightPanel {
-            grid-column:1/-1;
-            height:auto;
-            max-height:none;
-          }
-
-          .rightPanel .note {
-            max-width:700px;
           }
         }
 
@@ -1300,8 +1380,7 @@ function App() {
           }
 
           .wavePanel,
-          .stage,
-          .rightPanel {
+          .stage {
             grid-column:auto;
           }
 
@@ -1350,16 +1429,11 @@ function App() {
             <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" />
           </a>
 
-          <div>
+          <div className="titleBlock">
             <h1>Wave reflection</h1>
-            <p className="sub">
-              A finite-width beam approaches a straight barrier and reflects with equal angles to the normal.
-            </p>
           </div>
 
-          <div className="badge">
-            Interactive physics
-          </div>
+          
         </div>
       </header>
 
@@ -1373,160 +1447,162 @@ function App() {
             Wave
           </div>
 
-          <button
-            type="button"
-            className="pauseButton"
-            onClick={() =>
-              setPaused((p) => !p)
-            }
-          >
-            {paused
-              ? "▶ Resume"
-              : "Ⅱ Pause"}
-          </button>
-
-          {control(
-            "Angle of incidence",
-            angleDeg,
-            0,
-            65,
-            0.5,
-            setAngleDeg,
-            `${fmt(angleDeg, 1)}°`
-          )}
-
-          {control(
-            "Wavelength",
-            wavelength,
-            45,
-            125,
-            1,
-            setWavelength,
-            `${fmt(wavelength, 0)} px`
-          )}
-
-          {control(
-            "Wave speed",
-            speed,
-            60,
-            220,
-            5,
-            setSpeed,
-            `${fmt(speed, 0)} px/s`
-          )}
-
-          {control(
-            "Beam width",
-            beamWidth,
-            90,
-            240,
-            5,
-            setBeamWidth,
-            `${fmt(beamWidth, 0)} px`
-          )}
-
-          <div className="toggleRow">
-            <span>Show rays</span>
+          <div className="actionGrid">
+            <button
+              type="button"
+              className="pauseButton"
+              onClick={() =>
+                setPaused((p) => !p)
+              }
+            >
+              {paused
+                ? "▶ Resume"
+                : "Ⅱ Pause"}
+            </button>
 
             <button
               type="button"
-              role="switch"
-              aria-checked={showRays}
-              className={`toggle${
-                showRays ? " isOn" : ""
-              }`}
-              onClick={() =>
-                setShowRays((v) => !v)
-              }
+              className="resetButton"
+              onClick={reset}
             >
-              <span className="toggleThumb" />
+              ↺ Reset
             </button>
           </div>
 
-          <div className="toggleRow">
-            <span>Show angles</span>
+          <div className="sliderGrid">
+            {control(
+              "Angle of incidence",
+              angleDeg,
+              0,
+              65,
+              0.5,
+              setAngleDeg,
+              `${fmt(angleDeg, 1)}°`
+            )}
 
-            <button
-              type="button"
-              role="switch"
-              aria-checked={showAngles}
-              className={`toggle${
-                showAngles ? " isOn" : ""
-              }`}
-              onClick={() =>
-                setShowAngles((v) => !v)
-              }
-            >
-              <span className="toggleThumb" />
-            </button>
+            {control(
+              "Wavelength",
+              wavelength,
+              45,
+              125,
+              1,
+              setWavelength,
+              `${fmt(wavelength, 0)} px`
+            )}
+
+            {control(
+              "Wave speed",
+              speed,
+              60,
+              220,
+              5,
+              setSpeed,
+              `${fmt(speed, 0)} px/s`
+            )}
+
+            {control(
+              "Beam width",
+              beamWidth,
+              90,
+              240,
+              5,
+              setBeamWidth,
+              `${fmt(beamWidth, 0)} px`
+            )}
           </div>
 
-          <div className="metrics">
-            <div className="metric">
-              <span>Incidence</span>
-              <strong>
-                {fmt(angleDeg, 1)}°
-              </strong>
-              <small>
-                to the normal
-              </small>
+          <div className="toggleGrid">
+            <div className="toggleRow">
+              <span>Rays</span>
+
+              <button
+                type="button"
+                role="switch"
+                aria-label="Show rays"
+                aria-checked={showRays}
+                className={`toggle${
+                  showRays ? " isOn" : ""
+                }`}
+                onClick={() =>
+                  setShowRays((v) => !v)
+                }
+              >
+                <span className="toggleThumb" />
+              </button>
             </div>
 
-            <div className="metric">
-              <span>Reflection</span>
-              <strong>
-                {fmt(angleDeg, 1)}°
-              </strong>
-              <small>
-                to the normal
-              </small>
+            <div className="toggleRow">
+              <span>Angles</span>
+
+              <button
+                type="button"
+                role="switch"
+                aria-label="Show angles"
+                aria-checked={showAngles}
+                className={`toggle${
+                  showAngles ? " isOn" : ""
+                }`}
+                onClick={() =>
+                  setShowAngles((v) => !v)
+                }
+              >
+                <span className="toggleThumb" />
+              </button>
             </div>
 
-            <div className="metric">
-              <span>Direction</span>
-              <strong>
-                {angleDeg === 0
-                  ? "Normal"
-                  : "Oblique"}
-              </strong>
-              <small>
-                plane wave
-              </small>
+            <div className="toggleRow">
+              <span>Wavefronts</span>
+
+              <button
+                type="button"
+                role="switch"
+                aria-label="Show wavefronts"
+                aria-checked={showWavefronts}
+                className={`toggle${
+                  showWavefronts ? " isOn" : ""
+                }`}
+                onClick={() =>
+                  setShowWavefronts((v) => !v)
+                }
+              >
+                <span className="toggleThumb" />
+              </button>
             </div>
 
-            <div className="metric">
-              <span>λ</span>
-              <strong>
-                {fmt(wavelength, 0)} px
-              </strong>
-              <small>
-                wavefront spacing
-              </small>
-            </div>
-
-            <div className="metric">
-              <span>Beam width</span>
-              <strong>
-                {fmt(beamWidth, 0)} px
-              </strong>
-              <small>
-                finite aperture
-              </small>
-            </div>
           </div>
+            <div className="formula">
+              <h3>
+                Law of reflection
+              </h3>
 
-          <button
-            type="button"
-            className="resetButton"
-            onClick={reset}
-          >
-            ↺ Reset
-          </button>
+              <div className="row">
+                <div className="equation big">
+                  θᵢ = θᵣ
+                </div>
+
+                <div className="label">
+                  angle of incidence = angle of reflection
+                </div>
+              </div>
+            </div>
+
         </aside>
 
         <section className="card stage">
           <div className="stageToolbar">
             <div className="toolGroup">
+              <button
+                type="button"
+                className="iconButton"
+                aria-label={showLegend ? "Hide legend" : "Show legend"}
+                title={showLegend ? "Hide legend" : "Show legend"}
+                onClick={() => setShowLegend((visible) => !visible)}
+              >
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M3 5h2M8 5h9M3 10h2M8 10h9M3 15h2M8 15h9" />
+                </svg>
+              </button>
+
               <button
                 type="button"
                 className="iconButton"
@@ -1542,7 +1618,6 @@ function App() {
                 }
                 onClick={() => {
                   setMaximized((v) => !v);
-                  setZoom(maximized ? 1.5 : 1);
                 }}
               >
                 <svg
@@ -1565,31 +1640,25 @@ function App() {
           </div>
 
           <svg
-            ref={svgRef}
             className="sim"
             viewBox={`0 0 ${W} ${H}`}
-            onDoubleClick={() =>
-              setZoom(zoomFloor)
-            }
             aria-label="Animated plane wave reflection"
           >
             <defs>
               <pattern
                 id="hatch"
-                width="12"
-                height="12"
+                width="14"
+                height="14"
                 patternUnits="userSpaceOnUse"
-                patternTransform="rotate(135)"
+                patternTransform="rotate(45)"
               >
-                <rect
-                  width="12"
-                  height="12"
-                  fill="#a8b8bc"
-                />
-                <rect
-                  width="5"
-                  height="12"
-                  fill="#dce5e7"
+                <line
+                  x1="0"
+                  y1="7"
+                  x2="14"
+                  y2="7"
+                  stroke="#7a8f96"
+                  strokeWidth="2.2"
                 />
               </pattern>
 
@@ -1633,12 +1702,11 @@ function App() {
             <g
               transform={`translate(${W / 2} ${
                 H / 2
-              }) scale(${zoom}) translate(${
+              }) scale(1) translate(${ 
                 -W / 2
               } ${-H / 2})`}
             >
-              {/* Enlarged grid: deliberately extends far beyond the
-                  simulation bounds so zooming never reveals its edges. */}
+                {/* Enlarged grid extends beyond the simulation bounds. */}
               <g opacity=".22">
                 {Array.from(
                   { length: 80 },
@@ -1671,7 +1739,8 @@ function App() {
                 )}
               </g>
 
-              <g>
+              {showWavefronts && (
+                <g>
                 <polygon
                   points={geometry.incidentPolygon
                     .map(
@@ -1725,30 +1794,126 @@ function App() {
                     />
                   )
                 )}
-              </g>
+                </g>
+              )}
 
               <g filter="url(#softShadow)">
                 <rect
                   x={WALL_X}
                   y="44"
-                  width="26"
+                  width="18"
                   height={H - 88}
-                  rx="4"
                   fill="url(#hatch)"
+                />
+
+                <line
+                  x1={WALL_X}
+                  y1="44"
+                  x2={WALL_X}
+                  y2={H - 44}
                   stroke="#6f8388"
-                  strokeWidth="1.5"
+                  strokeWidth="3"
                 />
 
                 <text
-                  x={WALL_X + 32}
+                  x={WALL_X + 24}
                   y="78"
                   fill="#527078"
                   fontSize="12"
                   fontWeight="700"
                 >
-                  BARRIER
+                  MIRROR
                 </text>
               </g>
+
+              {showRays && (
+                <g>
+                  {[geometry.incidentRay, geometry.reflectedRay].map(
+                    (segment, index) =>
+                      segment && (
+                        <line
+                          key={`ray-${index}`}
+                          x1={segment[0].x}
+                          y1={segment[0].y}
+                          x2={segment[1].x}
+                          y2={segment[1].y}
+                          stroke={index === 0 ? "#245766" : "#2d8581"}
+                          strokeWidth="3.5"
+                          opacity=".95"
+                        />
+                      )
+                  )}
+
+                  <Arrow
+                    x1={
+                      geometry.hit.x -
+                      geometry.incident.x *
+                        360
+                    }
+                    y1={
+                      geometry.hit.y -
+                      geometry.incident.y *
+                        360
+                    }
+                    x2={
+                      geometry.hit.x -
+                      geometry.incident.x *
+                        260
+                    }
+                    y2={
+                      geometry.hit.y -
+                      geometry.incident.y *
+                        260
+                    }
+                  />
+
+                  <Arrow
+                    stroke="#2d8581"
+                    x1={
+                      geometry.hit.x +
+                      geometry.reflected.x *
+                        260
+                    }
+                    y1={
+                      geometry.hit.y +
+                      geometry.reflected.y *
+                        260
+                    }
+                    x2={
+                      geometry.hit.x +
+                      geometry.reflected.x *
+                        360
+                    }
+                    y2={
+                      geometry.hit.y +
+                      geometry.reflected.y *
+                        360
+                    }
+                  />
+
+                  <text
+                    x={incidentBeamLabelPosition.x}
+                    y={incidentBeamLabelPosition.y}
+                    textAnchor="middle"
+                    fill="#245766"
+                    fontSize="12"
+                    fontWeight="700"
+                  >
+                    incident beam
+                  </text>
+
+                  <text
+                    x={reflectedBeamLabelPosition.x}
+                    y={reflectedBeamLabelPosition.y}
+                    textAnchor="middle"
+                    fill="#2d8581"
+                    fontSize="12"
+                    fontWeight="700"
+                  >
+                    reflected beam
+                  </text>
+                </g>
+              )}
 
               <circle
                 cx={geometry.hit.x}
@@ -1758,76 +1923,6 @@ function App() {
                 stroke="#2d8581"
                 strokeWidth="2.5"
               />
-
-              {showRays && (
-                <g>
-                  <Arrow
-                    x1={
-                      geometry.hit.x -
-                      geometry.incident.x *
-                        250
-                    }
-                    y1={
-                      geometry.hit.y -
-                      geometry.incident.y *
-                        250
-                    }
-                    x2={
-                      geometry.hit.x -
-                      geometry.incident.x *
-                        70
-                    }
-                    y2={
-                      geometry.hit.y -
-                      geometry.incident.y *
-                        70
-                    }
-                  />
-
-                  <Arrow
-                    x1={
-                      geometry.hit.x +
-                      geometry.reflected.x *
-                        70
-                    }
-                    y1={
-                      geometry.hit.y +
-                      geometry.reflected.y *
-                        70
-                    }
-                    x2={
-                      geometry.hit.x +
-                      geometry.reflected.x *
-                        250
-                    }
-                    y2={
-                      geometry.hit.y +
-                      geometry.reflected.y *
-                        250
-                    }
-                  />
-
-                  <text
-                    x="106"
-                    y="92"
-                    fill="#245766"
-                    fontSize="12"
-                    fontWeight="700"
-                  >
-                    incident beam
-                  </text>
-
-                  <text
-                    x="940"
-                    y="605"
-                    fill="#2d8581"
-                    fontSize="12"
-                    fontWeight="700"
-                  >
-                    reflected beam
-                  </text>
-                </g>
-              )}
 
               {showAngles && (
                 <g>
@@ -1955,85 +2050,47 @@ function App() {
             
             </g>
           </svg>
+
+          {showLegend && (
+            <aside className="legendWindow" aria-label="Wave diagram legend">
+              <div className="legendHeader">
+                <span>Legend</span>
+                <button
+                  type="button"
+                  className="legendClose"
+                  aria-label="Close legend"
+                  onClick={() => setShowLegend(false)}
+                >
+                  <svg viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="m5 5 10 10M15 5 5 15" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="legend">
+                <div className="legendRow">
+                  <span className="legendSwatch" />
+                  <span>Incident wavefronts</span>
+                </div>
+
+                <div className="legendRow">
+                  <span className="legendSwatch" style={{ background: "#2d8581" }} />
+                  <span>Reflected wavefronts</span>
+                </div>
+
+                <div className="legendRow">
+                  <span className="legendWall" />
+                  <span>Plane barrier</span>
+                </div>
+
+                <div className="legendRow">
+                  <span className="legendNormal" />
+                  <span>Normal at the point of incidence</span>
+                </div>
+              </div>
+            </aside>
+          )}
         </section>
-
-        <aside className="card controls rightPanel">
-          <div className="section">
-            Reflection
-          </div>
-
-          <div className="note">
-            Each wavefront is perpendicular to its light ray. The reflected beam is the mirror image of the incident beam, so the angle of reflection equals the angle of incidence.
-          </div>
-
-          <div className="formula">
-            <h3>
-              Law of reflection
-            </h3>
-
-            <div className="row">
-              <div className="equation big">
-                θᵢ = θᵣ
-              </div>
-
-              <div className="label">
-                angle of incidence = angle of reflection
-              </div>
-            </div>
-          </div>
-
-          <div
-            className="section"
-            style={{ marginTop: 3 }}
-          >
-            Legend
-          </div>
-
-          <div className="legend">
-            <div className="legendRow">
-              <span className="legendSwatch" />
-              <span>
-                Incident wavefronts
-              </span>
-            </div>
-
-            <div className="legendRow">
-              <span
-                className="legendSwatch"
-                style={{
-                  background: "#2d8581",
-                }}
-              />
-              <span>
-                Reflected wavefronts
-              </span>
-            </div>
-
-            <div className="legendRow">
-              <span className="legendWall" />
-              <span>
-                Plane barrier
-              </span>
-            </div>
-
-            <div className="legendRow">
-              <span className="legendNormal" />
-              <span>
-                Normal at the point of incidence
-              </span>
-            </div>
-          </div>
-
-          <div
-            className="note"
-            style={{ marginTop: "auto" }}
-          >
-            Tip: use <strong>Space</strong> to
-            pause/play and{" "}
-            <strong>, / .</strong> to nudge the
-            angle by 1°.
-          </div>
-        </aside>
 
         <div className="hotkeys">
           <span>
@@ -2043,10 +2100,6 @@ function App() {
           <span>
             <kbd>,</kbd>
             <kbd>.</kbd> adjust angle
-          </span>
-
-          <span>
-            <kbd>Wheel</kbd> zoom
           </span>
 
           <span>

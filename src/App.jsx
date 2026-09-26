@@ -1426,6 +1426,8 @@ function RefractionSimulation() {
 
           grid-column: 1 / -1;
 
+          position: relative;
+
           display: flex;
 
           justify-content: center;
@@ -1436,11 +1438,23 @@ function RefractionSimulation() {
 
           gap: 8px 18px;
 
-          padding: 8px 12px;
+          padding: 8px 174px 8px 12px;
 
           color: #607980;
 
           font-size: 12px;
+
+        }
+
+        .hotkeys > .coffee-embed-frame {
+
+          position: absolute;
+
+          top: 50%;
+
+          right: 12px;
+
+          transform: translateY(-50%);
 
         }
 
