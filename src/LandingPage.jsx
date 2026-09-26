@@ -66,13 +66,14 @@ export default function LandingPage({ refractionPath, reflectionPath }) {
           <span className="mark-symbol" aria-hidden="true"><i /><i /><i /></span>
           <span>WAVE / FIELD NOTES</span>
         </a>
-        <span className="header-index">PHYSICS INTERACTIVE <span>01—02</span></span>
+        <a className="landing-home-link" href="https://awm11.github.io/" aria-label="AWM11 home">
+          <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" />
+        </a>
       </header>
 
       <section className="landing-intro" aria-labelledby="landing-title">
         <p className="eyebrow"><span /> WAVE BEHAVIOUR, MADE VISIBLE</p>
         <h1 id="landing-title">Choose an<br />investigation<span className="title-period">.</span></h1>
-        <p className="intro-copy">Follow a wave as it meets a boundary. Change the conditions and see what changes with it.</p>
       </section>
 
       <section className="investigation-grid" aria-label="Wave investigations">
@@ -97,7 +98,6 @@ export default function LandingPage({ refractionPath, reflectionPath }) {
 
       <footer className="landing-footer">
         <span>WAVES &amp; MATERIALS</span>
-        <span>AN INTERACTIVE PHYSICS EXPLORER</span>
       </footer>
     </main>
   );

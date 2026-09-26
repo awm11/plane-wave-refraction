@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import LandingPage from "./LandingPage.jsx";
 import ReflectionApp from "./reflectionApp.jsx";
+import BuyMeCoffeeButton from "./BuyMeCoffeeButton.jsx";
 
 const W = 1200;
 
@@ -1263,7 +1264,7 @@ function RefractionSimulation() {
 
           position: absolute;
 
-          left: 0;
+          right: 0;
 
           top: 50%;
 
@@ -1288,6 +1289,54 @@ function RefractionSimulation() {
         }
 
         .homeLink:focus-visible {
+
+          outline: 3px solid #2f7883;
+
+          outline-offset: 3px;
+
+        }
+
+        .landingLink {
+
+          display: inline-flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          position: absolute;
+
+          left: 0;
+
+          top: 50%;
+
+          width: 46px;
+
+          height: 46px;
+
+          border: 1px solid rgba(38,72,81,.12);
+
+          border-radius: 11px;
+
+          background: rgba(255,255,255,.82);
+
+          color: #245766;
+
+          box-shadow: 0 8px 20px rgba(47,76,85,.08);
+
+          transform: translateY(-50%);
+
+        }
+
+        .landingLink svg {
+
+          width: 24px;
+
+          height: 24px;
+
+        }
+
+        .landingLink:focus-visible {
 
           outline: 3px solid #2f7883;
 
@@ -2138,6 +2187,23 @@ function RefractionSimulation() {
             aria-label="AWM11 home"
           >
             <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" />
+          </a>
+
+          <a
+            className="landingLink"
+            href={import.meta.env.BASE_URL}
+            aria-label="Back to wave investigations"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+            >
+              <path d="M3 7h18M3 12h18M3 17h18" />
+              <path d="M16 4v16" />
+            </svg>
           </a>
 
           <div>
@@ -3200,6 +3266,8 @@ function RefractionSimulation() {
             <span aria-hidden="true">🔍</span> Pinch trackpad / scroll mouse
             wheel to zoom
           </span>
+
+          <BuyMeCoffeeButton />
         </div>
       </main>
     </div>

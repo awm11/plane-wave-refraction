@@ -54,6 +54,36 @@ body {
   margin: 0;
 }
 
+.coffee-embed-frame {
+  position: relative;
+  display: block;
+  flex: 0 0 150px;
+  width: 150px;
+  height: 36px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #ffdd00;
+  opacity: 0.86;
+  transition: opacity 160ms ease;
+}
+
+.coffee-embed-frame:hover,
+.coffee-embed-frame:focus-within {
+  opacity: 1;
+}
+
+.coffee-embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 60px;
+  border: 0;
+  background: #ffdd00;
+  transform: scale(0.6);
+  transform-origin: top left;
+}
+
 #root {
   width: 100%;
   max-width: none;

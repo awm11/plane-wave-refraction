@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import BuyMeCoffeeButton from "./BuyMeCoffeeButton.jsx";
 
 const W = 1200;
 const H = 720;
@@ -760,6 +761,9 @@ function App() {
         }
 
         .brandDot {
+          position: absolute;
+          left: 0;
+          top: 50%;
           width: 46px;
           height: 46px;
           border-radius: 11px;
@@ -769,12 +773,35 @@ function App() {
           place-items: center;
           color: #245766;
           box-shadow: 0 8px 20px rgba(47,76,85,.08);
+          transform: translateY(-50%);
           flex: 0 0 auto;
         }
 
         .brandDot svg {
           width: 24px;
           height: 24px;
+        }
+
+        .homeLink {
+          display: inline-flex;
+          position: absolute;
+          right: 0;
+          top: 50%;
+          width: 46px;
+          height: 46px;
+          border-radius: 11px;
+          transform: translateY(-50%);
+        }
+
+        .homeLink img {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+
+        .homeLink:focus-visible {
+          outline: 3px solid #2f7883;
+          outline-offset: 3px;
         }
 
         h1 {
@@ -1313,6 +1340,14 @@ function App() {
               <path d="M3 7h18M3 12h18M3 17h18" />
               <path d="M16 4v16" />
             </svg>
+          </a>
+
+          <a
+            className="homeLink"
+            href="https://awm11.github.io/"
+            aria-label="AWM11 home"
+          >
+            <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" />
           </a>
 
           <div>
@@ -2017,6 +2052,8 @@ function App() {
           <span>
             <kbd>Esc</kbd> exit full screen
           </span>
+
+          <BuyMeCoffeeButton />
         </div>
       </main>
     </div>

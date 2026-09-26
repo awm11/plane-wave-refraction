@@ -42,6 +42,14 @@
 .mark-symbol i:nth-child(3) { height: 13px; }
 .header-index { color: var(--landing-muted); }
 .header-index span { margin-left: 18px; color: var(--landing-coral); }
+.landing-home-link {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+}
+.landing-home-link img { display: block; width: 100%; height: 100%; }
+.landing-home-link:focus-visible { outline: 2px solid var(--landing-coral); outline-offset: 3px; }
 
 .landing-intro {
   max-width: 760px;
@@ -60,7 +68,7 @@
 .landing-intro h1 {
   margin: 0;
   color: var(--landing-ink);
-  font: 600 clamp(52px, 7vw, 84px)/.98 'Manrope', 'Avenir Next', sans-serif;
+  font: 600 clamp(26px, 3.5vw, 42px)/.98 'Manrope', 'Avenir Next', sans-serif;
   letter-spacing: 0;
 }
 
@@ -140,7 +148,7 @@
   .header-index { font-size: 9px; }
   .header-index span { margin-left: 7px; }
   .landing-intro { margin: 52px auto 30px; }
-  .landing-intro h1 { font-size: 54px; }
+  .landing-intro h1 { font-size: 27px; }
   .intro-copy { max-width: 350px; font-size: 14px; }
   .investigation-grid { grid-template-columns: 1fr; gap: 15px; }
   .investigation-tile { aspect-ratio: 1 / 1; }
