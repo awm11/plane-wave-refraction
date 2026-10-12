@@ -66,7 +66,7 @@ export default function LandingPage({ refractionPath, reflectionPath }) {
           <span className="mark-symbol" aria-hidden="true"><i /><i /><i /></span>
           <span>WAVE / FIELD NOTES</span>
         </a>
-        <a className="landing-home-link" href="https://awm11.github.io/" aria-label="AWM11 home">
+        <a className="landing-home-link" href="/" aria-label="AWM11 home">
           <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" />
         </a>
       </header>

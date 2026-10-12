@@ -2196,7 +2196,7 @@ function RefractionSimulation() {
           <a
             className="homeLink"
 
-            href="https://awm11.github.io/"
+            href="/"
 
             aria-label="AWM11 home"
           >
