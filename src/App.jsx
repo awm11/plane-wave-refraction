@@ -1224,7 +1224,7 @@ function RefractionSimulation() {
 
           margin: 0;
 
-          min-width: 320px;
+          min-width: 480px;
 
           min-height: 100%;
 
@@ -1254,19 +1254,19 @@ function RefractionSimulation() {
 
           width: 100%;
 
-          max-width: 1480px;
+          max-width: 2220px;
 
           min-height: 100vh;
 
           margin: 0 auto;
 
-          padding: 14px 16px 16px;
+          padding: 21px 24px 24px;
 
           display: flex;
 
           flex-direction: column;
 
-          gap: 12px;
+          gap: 18px;
 
         }
 
@@ -1278,7 +1278,7 @@ function RefractionSimulation() {
 
           align-items: center;
 
-          gap: 18px;
+          gap: 27px;
 
           position: relative;
 
@@ -1290,13 +1290,13 @@ function RefractionSimulation() {
 
           align-items: center;
 
-          gap: 14px;
+          gap: 21px;
 
           justify-content: center;
 
           width: 100%;
 
-          padding: 0 56px;
+          padding: 0 84px;
 
           box-sizing: border-box;
 
@@ -1318,11 +1318,11 @@ function RefractionSimulation() {
 
           transform: translateY(-50%);
 
-          width: 46px;
+          width: 69px;
 
-          height: 46px;
+          height: 69px;
 
-          border-radius: 11px;
+          border-radius: 16.5px;
 
         }
 
@@ -1338,9 +1338,9 @@ function RefractionSimulation() {
 
         .homeLink:focus-visible {
 
-          outline: 3px solid #2f7883;
+          outline: 4.5px solid #2f7883;
 
-          outline-offset: 3px;
+          outline-offset: 4.5px;
 
         }
 
@@ -1358,19 +1358,19 @@ function RefractionSimulation() {
 
           top: 50%;
 
-          width: 46px;
+          width: 69px;
 
-          height: 46px;
+          height: 69px;
 
-          border: 1px solid rgba(38,72,81,.12);
+          border: 1.5px solid rgba(38,72,81,.12);
 
-          border-radius: 11px;
+          border-radius: 16.5px;
 
           background: rgba(255,255,255,.82);
 
           color: #245766;
 
-          box-shadow: 0 8px 20px rgba(47,76,85,.08);
+          box-shadow: 0 12px 30px rgba(47,76,85,.08);
 
           transform: translateY(-50%);
 
@@ -1378,17 +1378,17 @@ function RefractionSimulation() {
 
         .landingLink svg {
 
-          width: 24px;
+          width: 36px;
 
-          height: 24px;
+          height: 36px;
 
         }
 
         .landingLink:focus-visible {
 
-          outline: 3px solid #2f7883;
+          outline: 4.5px solid #2f7883;
 
-          outline-offset: 3px;
+          outline-offset: 4.5px;
 
         }
 
@@ -1398,7 +1398,7 @@ function RefractionSimulation() {
 
           font-size:
 
-            clamp(24px, 2.6vw, 34px);
+            clamp(36px, 2.6vw, 51px);
 
           letter-spacing: -.04em;
 
@@ -1406,13 +1406,13 @@ function RefractionSimulation() {
 
         .sub {
 
-          margin: 5px auto 0;
+          margin: 7.5px auto 0;
 
-          max-width: 780px;
+          max-width: 1170px;
 
           color: #607980;
 
-          font-size: 13px;
+          font-size: 19.5px;
 
           line-height: 1.4;
 
@@ -1420,15 +1420,15 @@ function RefractionSimulation() {
 
         .badge {
 
-          padding: 7px 11px;
+          padding: 10.5px 16.5px;
 
           border:
 
-            1px solid
+            1.5px solid
 
             rgba(38,72,81,.11);
 
-          border-radius: 999px;
+          border-radius: 1498.5px;
 
           background:
 
@@ -1436,7 +1436,7 @@ function RefractionSimulation() {
 
           color: #55717a;
 
-          font-size: 10px;
+          font-size: 15px;
 
           font-weight: 750;
 
@@ -1456,13 +1456,13 @@ function RefractionSimulation() {
 
           grid-template-columns:
 
-            278px
+            417px
 
             minmax(0, 1fr)
 
-            292px;
+            438px;
 
-          gap: 12px;
+          gap: 18px;
 
           align-items: stretch;
 
@@ -1484,13 +1484,13 @@ function RefractionSimulation() {
 
           flex-wrap: wrap;
 
-          gap: 8px 18px;
+          gap: 12px 27px;
 
-          padding: 8px 174px 8px 12px;
+          padding: 12px 261px 12px 18px;
 
           color: #607980;
 
-          font-size: 12px;
+          font-size: 18px;
 
         }
 
@@ -1500,7 +1500,7 @@ function RefractionSimulation() {
 
           top: 50%;
 
-          right: 12px;
+          right: 18px;
 
           transform: translateY(-50%);
 
@@ -1512,7 +1512,7 @@ function RefractionSimulation() {
 
           align-items: center;
 
-          gap: 6px;
+          gap: 9px;
 
           white-space: nowrap;
 
@@ -1520,21 +1520,21 @@ function RefractionSimulation() {
 
         .hotkeys kbd {
 
-          min-width: 22px;
+          min-width: 33px;
 
-          padding: 3px 6px;
+          padding: 4.5px 9px;
 
-          border: 1px solid rgba(38,72,81,.2);
+          border: 1.5px solid rgba(38,72,81,.2);
 
-          border-bottom-width: 2px;
+          border-bottom-width: 3px;
 
-          border-radius: 5px;
+          border-radius: 7.5px;
 
           background: rgba(255,255,255,.78);
 
           color: #245766;
 
-          font: 700 11px/1.1 inherit;
+          font: 700 16.5px/1.1 inherit;
 
           text-align: center;
 
@@ -1550,17 +1550,17 @@ function RefractionSimulation() {
 
           border:
 
-            1px solid
+            1.5px solid
 
             rgba(38,72,81,.11);
 
-          border-radius: 18px;
+          border-radius: 27px;
 
           overflow: hidden;
 
           box-shadow:
 
-            0 15px 40px
+            0 22.5px 60px
 
             rgba(47,76,85,.11);
 
@@ -1572,7 +1572,7 @@ function RefractionSimulation() {
 
           min-height: 0;
 
-          height: 520px;
+          height: 780px;
 
           background: #dcecef;
 
@@ -1617,15 +1617,15 @@ function RefractionSimulation() {
 
         .controls {
 
-          height: 520px;
+          height: 780px;
 
-          padding: 14px;
+          padding: 21px;
 
           display: flex;
 
           flex-direction: column;
 
-          gap: 10px;
+          gap: 15px;
 
           overflow-y: auto;
 
@@ -1637,9 +1637,9 @@ function RefractionSimulation() {
 
           position: absolute;
 
-          top: 12px;
+          top: 18px;
 
-          left: 12px;
+          left: 18px;
 
           z-index: 1;
 
@@ -1647,15 +1647,15 @@ function RefractionSimulation() {
 
           place-items: center;
 
-          width: 32px;
+          width: 48px;
 
-          height: 32px;
+          height: 48px;
 
           padding: 0;
 
-          border: 1px solid rgba(49,79,88,.18);
+          border: 1.5px solid rgba(49,79,88,.18);
 
-          border-radius: 8px;
+          border-radius: 12px;
 
           background: #fff;
 
@@ -1673,17 +1673,17 @@ function RefractionSimulation() {
 
         .panelExpandButton:focus-visible {
 
-          outline: 2px solid #245766;
+          outline: 3px solid #245766;
 
-          outline-offset: 2px;
+          outline-offset: 3px;
 
         }
 
         .panelExpandButton svg {
 
-          width: 17px;
+          width: 25.5px;
 
-          height: 17px;
+          height: 25.5px;
 
           fill: none;
 
@@ -1707,7 +1707,7 @@ function RefractionSimulation() {
 
           display: block;
 
-          padding: 16px;
+          padding: 24px;
 
           background: linear-gradient(135deg, #eef7f8, #dce9ed);
 
@@ -1727,13 +1727,13 @@ function RefractionSimulation() {
 
           max-height: none;
 
-          border-radius: 12px;
+          border-radius: 18px;
 
         }
 
         .section {
 
-          margin-top: 1px;
+          margin-top: 1.5px;
 
           color: #648089;
 
@@ -1741,7 +1741,7 @@ function RefractionSimulation() {
 
           letter-spacing: .08em;
 
-          font-size: 10px;
+          font-size: 15px;
 
           font-weight: 850;
 
@@ -1751,11 +1751,11 @@ function RefractionSimulation() {
 
           border-top:
 
-            1px solid
+            1.5px solid
 
             rgba(49,79,88,.1);
 
-          padding-top: 9px;
+          padding-top: 13.5px;
 
         }
 
@@ -1767,15 +1767,15 @@ function RefractionSimulation() {
 
           justify-content: space-between;
 
-          gap: 7px;
+          gap: 10.5px;
 
-          margin-bottom: 5px;
+          margin-bottom: 7.5px;
 
         }
 
         .controlHead label {
 
-          font-size: 11px;
+          font-size: 16.5px;
 
           line-height: 1.25;
 
@@ -1787,15 +1787,15 @@ function RefractionSimulation() {
 
           flex-shrink: 0;
 
-          padding: 4px 6px;
+          padding: 6px 9px;
 
-          border-radius: 7px;
+          border-radius: 10.5px;
 
           background: #edf6f7;
 
           color: #295a67;
 
-          font-size: 9px;
+          font-size: 13.5px;
 
           font-weight: 800;
 
@@ -1819,17 +1819,17 @@ function RefractionSimulation() {
 
           width: 100%;
 
-          padding: 9px 10px;
+          padding: 13.5px 15px;
 
-          border: 1px solid #2a6168;
+          border: 1.5px solid #2a6168;
 
-          border-radius: 9px;
+          border-radius: 13.5px;
 
           background: #edf6f7;
 
           color: #245766;
 
-          font-size: 11px;
+          font-size: 16.5px;
 
           font-weight: 800;
 
@@ -1851,13 +1851,13 @@ function RefractionSimulation() {
 
           justify-content: space-between;
 
-          gap: 10px;
+          gap: 15px;
 
-          padding: 2px 1px;
+          padding: 3px 1.5px;
 
           color: #35545c;
 
-          font-size: 11px;
+          font-size: 16.5px;
 
           font-weight: 750;
 
@@ -1869,15 +1869,15 @@ function RefractionSimulation() {
 
           flex: 0 0 auto;
 
-          width: 48px;
+          width: 72px;
 
-          height: 27px;
+          height: 40.5px;
 
-          padding: 3px;
+          padding: 4.5px;
 
-          border: 1px solid #8a9ca0;
+          border: 1.5px solid #8a9ca0;
 
-          border-radius: 999px;
+          border-radius: 1498.5px;
 
           background: #e2e9ea;
 
@@ -1897,9 +1897,9 @@ function RefractionSimulation() {
 
         .rayToggle:focus-visible {
 
-          outline: 2px solid #245766;
+          outline: 3px solid #245766;
 
-          outline-offset: 2px;
+          outline-offset: 3px;
 
         }
 
@@ -1907,15 +1907,15 @@ function RefractionSimulation() {
 
           display: block;
 
-          width: 19px;
+          width: 28.5px;
 
-          height: 19px;
+          height: 28.5px;
 
           border-radius: 50%;
 
           background: #fff;
 
-          box-shadow: 0 1px 3px rgba(18, 48, 54, .28);
+          box-shadow: 0 1.5px 4.5px rgba(18, 48, 54, .28);
 
           transform: translateX(0);
 
@@ -1925,7 +1925,7 @@ function RefractionSimulation() {
 
         .rayToggle.isOn .rayToggleThumb {
 
-          transform: translateX(21px);
+          transform: translateX(31.5px);
 
         }
 
@@ -1937,7 +1937,7 @@ function RefractionSimulation() {
 
             1fr 1fr;
 
-          gap: 6px;
+          gap: 9px;
 
         }
 
@@ -1945,15 +1945,15 @@ function RefractionSimulation() {
 
           min-width: 0;
 
-          padding: 7px;
+          padding: 10.5px;
 
-          border-radius: 9px;
+          border-radius: 13.5px;
 
           background: #f3f8f9;
 
           border:
 
-            1px solid
+            1.5px solid
 
             rgba(49,79,88,.07);
 
@@ -1965,11 +1965,11 @@ function RefractionSimulation() {
 
           color: #74888e;
 
-          font-size: 8px;
+          font-size: 12px;
 
           line-height: 1.2;
 
-          margin-bottom: 2px;
+          margin-bottom: 3px;
 
         }
 
@@ -1977,7 +1977,7 @@ function RefractionSimulation() {
 
           display: block;
 
-          font-size: 10px;
+          font-size: 15px;
 
           line-height: 1.2;
 
@@ -1991,11 +1991,11 @@ function RefractionSimulation() {
 
           display: block;
 
-          margin-top: 2px;
+          margin-top: 3px;
 
           color: #7b8d92;
 
-          font-size: 8px;
+          font-size: 12px;
 
           line-height: 1.2;
 
@@ -2005,21 +2005,21 @@ function RefractionSimulation() {
 
         .note {
 
-          padding: 9px 10px;
+          padding: 13.5px 15px;
 
           border:
 
-            1px dashed
+            1.5px dashed
 
             rgba(49,79,88,.16);
 
-          border-radius: 10px;
+          border-radius: 15px;
 
           background: #f8fbfb;
 
           color: #657a81;
 
-          font-size: 10px;
+          font-size: 15px;
 
           line-height: 1.4;
 
@@ -2031,11 +2031,11 @@ function RefractionSimulation() {
 
           flex-direction: column;
 
-          gap: 6px;
+          gap: 9px;
 
           color: #657b82;
 
-          font-size: 10px;
+          font-size: 15px;
 
         }
 
@@ -2045,7 +2045,7 @@ function RefractionSimulation() {
 
           align-items: center;
 
-          gap: 7px;
+          gap: 10.5px;
 
         }
 
@@ -2053,11 +2053,11 @@ function RefractionSimulation() {
 
           flex: 0 0 auto;
 
-          width: 21px;
+          width: 31.5px;
 
-          height: 4px;
+          height: 6px;
 
-          border-radius: 999px;
+          border-radius: 1498.5px;
 
           background: #245766;
 
@@ -2067,15 +2067,15 @@ function RefractionSimulation() {
 
           flex: 0 0 auto;
 
-          width: 21px;
+          width: 31.5px;
 
-          height: 13px;
+          height: 19.5px;
 
-          border-radius: 4px;
+          border-radius: 6px;
 
           border:
 
-            1px solid
+            1.5px solid
 
             #2a6168;
 
@@ -2099,15 +2099,15 @@ function RefractionSimulation() {
 
         }
 
-        @media (max-width: 1180px) {
+        @media (max-width: 1770px) {
 
           .app {
 
-            max-width: 1220px;
+            max-width: 1830px;
 
-            padding-left: 12px;
+            padding-left: 18px;
 
-            padding-right: 12px;
+            padding-right: 18px;
 
           }
 
@@ -2115,31 +2115,31 @@ function RefractionSimulation() {
 
             grid-template-columns:
 
-              220px
+              330px
 
               minmax(0, 1fr)
 
-              270px;
+              405px;
 
-            gap: 10px;
+            gap: 15px;
 
           }
 
           .controls {
 
-            padding: 12px;
+            padding: 18px;
 
           }
 
         }
 
-        @media (max-width: 1000px) {
+        @media (max-width: 1500px) {
 
           .layout {
 
             grid-template-columns:
 
-              225px
+              337.5px
 
               minmax(0, 1fr);
 
@@ -2157,17 +2157,17 @@ function RefractionSimulation() {
 
           .rightPanel .note {
 
-            max-width: 700px;
+            max-width: 1050px;
 
           }
 
         }
 
-        @media (max-width: 760px) {
+        @media (max-width: 1140px) {
 
           .app {
 
-            padding: 11px;
+            padding: 16.5px;
 
           }
 
@@ -2203,7 +2203,7 @@ function RefractionSimulation() {
 
           .stage {
 
-            height: 480px;
+            height: 720px;
 
           }
 
@@ -2219,7 +2219,7 @@ function RefractionSimulation() {
 
         }
 
-        @media (max-width: 520px) {
+        @media (max-width: 780px) {
 
           .metrics {
 
@@ -2231,12 +2231,41 @@ function RefractionSimulation() {
 
           .stage {
 
-            height: 410px;
+            height: 615px;
 
           }
 
         }
 
+        /* Inherited and built-in sizes, scaled to match the 1.5x px values
+           above (the page otherwise inherits 18px/145% from index.css). */
+        .app {
+          font-size: 27px;
+          line-height: 39.15px;
+          letter-spacing: 0.27px;
+        }
+
+        @media (max-width: 1536px) {
+          .app {
+            font-size: 24px;
+            line-height: 34.8px;
+          }
+        }
+
+        .app input[type=range] {
+          zoom: 1.5;
+        }
+
+        .app .coffee-embed-frame {
+          flex-basis: 225px;
+          width: 225px;
+          height: 54px;
+          border-radius: 12px;
+        }
+
+        .app .coffee-embed {
+          transform: scale(0.9);
+        }
       `}</style>
 
       <header className="top">
@@ -2431,17 +2460,17 @@ function RefractionSimulation() {
 
           <div
             style={{
-              marginTop: "18px",
-              padding: "16px",
+              marginTop: "27px",
+              padding: "24px",
               background: "#f5f8f8",
-              border: "1px solid #d8e2e3",
-              borderRadius: "10px",
+              border: "1.5px solid #d8e2e3",
+              borderRadius: "15px",
             }}
           >
             <h3
               style={{
-                margin: "0 0 14px 0",
-                fontSize: "15px",
+                margin: "0 0 21px 0",
+                fontSize: "22.5px",
                 fontWeight: 600,
                 color: "#263b40",
               }}
@@ -2453,17 +2482,17 @@ function RefractionSimulation() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "14px",
+                gap: "21px",
               }}
             >
               {/* Equation */}
               <div>
                 <div
                   style={{
-                    fontSize: "12px",
+                    fontSize: "18px",
                     fontWeight: 600,
                     color: "#52656b",
-                    marginBottom: "5px",
+                    marginBottom: "7.5px",
                   }}
                 >
                   Equation
@@ -2472,7 +2501,7 @@ function RefractionSimulation() {
                 <div
                   style={{
                     fontFamily: "Georgia, serif",
-                    fontSize: "15px",
+                    fontSize: "22.5px",
                     color: "#263b40",
                   }}
                 >
@@ -2484,10 +2513,10 @@ function RefractionSimulation() {
               <div>
                 <div
                   style={{
-                    fontSize: "12px",
+                    fontSize: "18px",
                     fontWeight: 600,
                     color: "#52656b",
-                    marginBottom: "7px",
+                    marginBottom: "10.5px",
                   }}
                 >
                   Rearrange
@@ -2497,9 +2526,9 @@ function RefractionSimulation() {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "8px",
+                    gap: "12px",
                     fontFamily: "Georgia, serif",
-                    fontSize: "15px",
+                    fontSize: "22.5px",
                     color: "#263b40",
                   }}
                 >
@@ -2515,13 +2544,13 @@ function RefractionSimulation() {
                   >
                     <span
                       style={{
-                        padding: "0 8px 3px",
-                        borderBottom: "1px solid #263b40",
+                        padding: "0 12px 4.5px",
+                        borderBottom: "1.5px solid #263b40",
                       }}
                     >
                       n₁ sin(θ₁)
                     </span>
-                    <span style={{ paddingTop: "3px" }}>n₂</span>
+                    <span style={{ paddingTop: "4.5px" }}>n₂</span>
                   </span>
                 </div>
               </div>
@@ -2530,10 +2559,10 @@ function RefractionSimulation() {
               <div>
                 <div
                   style={{
-                    fontSize: "12px",
+                    fontSize: "18px",
                     fontWeight: 600,
                     color: "#52656b",
-                    marginBottom: "7px",
+                    marginBottom: "10.5px",
                   }}
                 >
                   Substitute values
@@ -2543,9 +2572,9 @@ function RefractionSimulation() {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "8px",
+                    gap: "12px",
                     fontFamily: "Georgia, serif",
-                    fontSize: "15px",
+                    fontSize: "22.5px",
                     color: "#263b40",
                   }}
                 >
@@ -2561,15 +2590,15 @@ function RefractionSimulation() {
                   >
                     <span
                       style={{
-                        padding: "0 8px 3px",
-                        borderBottom: "1px solid #263b40",
+                        padding: "0 12px 4.5px",
+                        borderBottom: "1.5px solid #263b40",
                         whiteSpace: "nowrap",
                       }}
                     >
                       {n1.toFixed(2)} × sin({angleDeg.toFixed(1)}°)
                     </span>
 
-                    <span style={{ paddingTop: "3px" }}>{n2.toFixed(2)}</span>
+                    <span style={{ paddingTop: "4.5px" }}>{n2.toFixed(2)}</span>
                   </span>
                 </div>
               </div>
@@ -2578,10 +2607,10 @@ function RefractionSimulation() {
               <div>
                 <div
                   style={{
-                    fontSize: "12px",
+                    fontSize: "18px",
                     fontWeight: 600,
                     color: "#52656b",
-                    marginBottom: "5px",
+                    marginBottom: "7.5px",
                   }}
                 >
                   Calculate
@@ -2590,7 +2619,7 @@ function RefractionSimulation() {
                 <div
                   style={{
                     fontFamily: "Georgia, serif",
-                    fontSize: "15px",
+                    fontSize: "22.5px",
                     color: "#263b40",
                   }}
                 >
@@ -2601,16 +2630,16 @@ function RefractionSimulation() {
               {/* Answer */}
               <div
                 style={{
-                  paddingTop: "10px",
-                  borderTop: "1px solid #d8e2e3",
+                  paddingTop: "15px",
+                  borderTop: "1.5px solid #d8e2e3",
                 }}
               >
                 <div
                   style={{
-                    fontSize: "12px",
+                    fontSize: "18px",
                     fontWeight: 600,
                     color: "#52656b",
-                    marginBottom: "5px",
+                    marginBottom: "7.5px",
                   }}
                 >
                   Therefore
@@ -2619,7 +2648,7 @@ function RefractionSimulation() {
                 <div
                   style={{
                     fontFamily: "Georgia, serif",
-                    fontSize: "18px",
+                    fontSize: "27px",
                     fontWeight: 600,
                     color: "#245b63",
                   }}
