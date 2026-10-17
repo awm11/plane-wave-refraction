@@ -733,7 +733,7 @@ function App() {
         body,
         #root {
           margin: 0;
-          min-width: 320px;
+          min-width: 480px;
           min-height: 100%;
         }
 
@@ -754,13 +754,13 @@ function App() {
 
         .app {
           width: 100%;
-          max-width: 1480px;
+          max-width: 2220px;
           min-height: 100vh;
           margin: 0 auto;
-          padding: 14px 16px 16px;
+          padding: 21px 24px 24px;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 18px;
         }
 
         .top {
@@ -773,15 +773,15 @@ function App() {
         .topIdentity {
           display: flex;
           align-items: center;
-          gap: 14px;
+          gap: 21px;
           justify-content: center;
           width: 100%;
-          padding: 0 56px;
+          padding: 0 84px;
           text-align: center;
         }
 
         .titleBlock h1 {
-          padding: 8px 14px;
+          padding: 12px 21px;
           color: #666;
         }
 
@@ -789,22 +789,22 @@ function App() {
           position: absolute;
           left: 0;
           top: 50%;
-          width: 46px;
-          height: 46px;
-          border-radius: 11px;
-          border: 1px solid rgba(38,72,81,.12);
+          width: 69px;
+          height: 69px;
+          border-radius: 16.5px;
+          border: 1.5px solid rgba(38,72,81,.12);
           background: rgba(255,255,255,.82);
           display: grid;
           place-items: center;
           color: #245766;
-          box-shadow: 0 8px 20px rgba(47,76,85,.08);
+          box-shadow: 0 12px 30px rgba(47,76,85,.08);
           transform: translateY(-50%);
           flex: 0 0 auto;
         }
 
         .brandDot svg {
-          width: 24px;
-          height: 24px;
+          width: 36px;
+          height: 36px;
         }
 
         .homeLink {
@@ -812,9 +812,9 @@ function App() {
           position: absolute;
           right: 0;
           top: 50%;
-          width: 46px;
-          height: 46px;
-          border-radius: 11px;
+          width: 69px;
+          height: 69px;
+          border-radius: 16.5px;
           transform: translateY(-50%);
         }
 
@@ -825,31 +825,31 @@ function App() {
         }
 
         .homeLink:focus-visible {
-          outline: 3px solid #2f7883;
-          outline-offset: 3px;
+          outline: 4.5px solid #2f7883;
+          outline-offset: 4.5px;
         }
 
         h1 {
           margin: 0;
-          font-size: clamp(24px, 2.6vw, 34px);
+          font-size: clamp(36px, 2.6vw, 51px);
           letter-spacing: -.04em;
         }
 
         .sub {
-          margin: 5px auto 0;
-          max-width: 780px;
+          margin: 7.5px auto 0;
+          max-width: 1170px;
           color: #607980;
-          font-size: 13px;
+          font-size: 19.5px;
           line-height: 1.4;
         }
 
         .badge {
-          padding: 7px 11px;
-          border: 1px solid rgba(38,72,81,.11);
-          border-radius: 999px;
+          padding: 10.5px 16.5px;
+          border: 1.5px solid rgba(38,72,81,.11);
+          border-radius: 1498.5px;
           background: rgba(255,255,255,.78);
           color: #55717a;
-          font-size: 10px;
+          font-size: 15px;
           font-weight: 750;
           white-space: nowrap;
         }
@@ -859,8 +859,8 @@ function App() {
           min-width: 0;
           min-height: 0;
           display: grid;
-          grid-template-columns: 278px minmax(0,1fr);
-          gap: 12px;
+          grid-template-columns: 417px minmax(0,1fr);
+          gap: 18px;
           align-items: stretch;
         }
 
@@ -872,51 +872,51 @@ function App() {
           justify-content: center;
           align-items: center;
           flex-wrap: wrap;
-          gap: 8px 18px;
-          padding: 8px 174px 8px 12px;
+          gap: 12px 27px;
+          padding: 12px 261px 12px 18px;
           color: #607980;
-          font-size: 12px;
+          font-size: 18px;
         }
 
         .hotkeys > .coffee-embed-frame {
           position: absolute;
           top: 50%;
-          right: 12px;
+          right: 18px;
           transform: translateY(-50%);
         }
 
         .hotkeys span {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
+          gap: 9px;
           white-space: nowrap;
         }
 
         .hotkeys kbd {
-          min-width: 22px;
-          padding: 3px 6px;
-          border: 1px solid rgba(38,72,81,.2);
-          border-bottom-width: 2px;
-          border-radius: 5px;
+          min-width: 33px;
+          padding: 4.5px 9px;
+          border: 1.5px solid rgba(38,72,81,.2);
+          border-bottom-width: 3px;
+          border-radius: 7.5px;
           background: rgba(255,255,255,.78);
           color: #245766;
-          font: 700 11px/1.1 inherit;
+          font: 700 16.5px/1.1 inherit;
           text-align: center;
         }
 
         .card {
           min-width: 0;
           background: rgba(255,255,255,.8);
-          border: 1px solid rgba(38,72,81,.11);
-          border-radius: 18px;
+          border: 1.5px solid rgba(38,72,81,.11);
+          border-radius: 27px;
           overflow: hidden;
-          box-shadow: 0 15px 40px rgba(47,76,85,.11);
+          box-shadow: 0 22.5px 60px rgba(47,76,85,.11);
         }
 
         .stage {
           position: relative;
           min-height: 0;
-          height: 520px;
+          height: 780px;
           background: #dcecef;
         }
 
@@ -930,11 +930,11 @@ function App() {
         }
 
         .controls {
-          height: 520px;
-          padding: 14px;
+          height: 780px;
+          padding: 21px;
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 15px;
           overflow-y: auto;
           overflow-x: hidden;
         }
@@ -944,65 +944,65 @@ function App() {
         }
 
         .section {
-          margin-top: 1px;
+          margin-top: 1.5px;
           color: #648089;
           text-transform: uppercase;
           letter-spacing: .08em;
-          font-size: 10px;
+          font-size: 15px;
           font-weight: 850;
         }
 
         .control {
-          border-top: 1px solid rgba(49,79,88,.1);
-          padding-top: 9px;
+          border-top: 1.5px solid rgba(49,79,88,.1);
+          padding-top: 13.5px;
         }
 
         .sliderGrid {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 10px;
+          gap: 15px;
         }
 
         .controlHead {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 7px;
-          margin-bottom: 5px;
+          gap: 10.5px;
+          margin-bottom: 7.5px;
         }
 
         .controlHead label {
-          font-size: 10px;
+          font-size: 15px;
           line-height: 1.25;
           font-weight: 680;
         }
 
         output {
           flex-shrink: 0;
-          padding: 4px 6px;
-          border-radius: 7px;
+          padding: 6px 9px;
+          border-radius: 10.5px;
           background: #edf6f7;
           color: #295a67;
-          font-size: 8px;
+          font-size: 12px;
           font-weight: 800;
           font-variant-numeric: tabular-nums;
         }
 
         input[type=range] {
           width: 100%;
-          height: 14.4px;
+          height: 21.6px;
           margin: 0;
           accent-color: #2f7384;
         }
 
         .pauseButton {
           width: 100%;
-          padding: 8.1px 10px;
-          border: 1px solid #2a6168;
-          border-radius: 9px;
+          padding: 12.15px 15px;
+          border: 1.5px solid #2a6168;
+          border-radius: 13.5px;
           background: #edf6f7;
           color: #245766;
-          font-size: 10px;
+          font-size: 15px;
           font-weight: 800;
           cursor: pointer;
         }
@@ -1010,7 +1010,7 @@ function App() {
         .actionGrid {
           display:grid;
           grid-template-columns:repeat(2, minmax(0, 1fr));
-          gap:10px;
+          gap:15px;
         }
 
         .pauseButton:hover {
@@ -1019,12 +1019,12 @@ function App() {
 
         .resetButton {
           width: 100%;
-          padding: 7.2px 10px;
-          border: 1px solid rgba(49,79,88,.16);
-          border-radius: 9px;
+          padding: 10.8px 15px;
+          border: 1.5px solid rgba(49,79,88,.16);
+          border-radius: 13.5px;
           background: rgba(255,255,255,.65);
           color: #4b6972;
-          font-size: 10px;
+          font-size: 15px;
           font-weight: 760;
           cursor: pointer;
         }
@@ -1038,30 +1038,30 @@ function App() {
           flex-direction:column;
           align-items:center;
           justify-content:flex-start;
-          gap:3px;
+          gap:4.5px;
           min-width:0;
-          padding:0 1px;
+          padding:0 1.5px;
           color:#35545c;
-          font-size:8px;
+          font-size:12px;
           font-weight:750;
-          line-height:10px;
+          line-height:15px;
           white-space:nowrap;
         }
 
         .toggleGrid {
           display:grid;
           grid-template-columns:repeat(3, minmax(0, 1fr));
-          gap:6px;
+          gap:9px;
         }
 
         .toggle {
           position:relative;
           flex:0 0 auto;
-          width:34px;
-          height:18px;
-          padding:2px;
-          border:1px solid #8a9ca0;
-          border-radius:999px;
+          width:51px;
+          height:27px;
+          padding:3px;
+          border:1.5px solid #8a9ca0;
+          border-radius:1498.5px;
           background:#e2e9ea;
           cursor:pointer;
           transition:background 160ms ease,border-color 160ms ease;
@@ -1073,59 +1073,59 @@ function App() {
         }
 
         .toggle:focus-visible {
-          outline:2px solid #245766;
-          outline-offset:2px;
+          outline:3px solid #245766;
+          outline-offset:3px;
         }
 
         .toggleThumb {
           display:block;
-          width:12px;
-          height:12px;
+          width:18px;
+          height:18px;
           border-radius:50%;
           background:#fff;
-          box-shadow:0 1px 3px rgba(18,48,54,.28);
+          box-shadow:0 1.5px 4.5px rgba(18,48,54,.28);
           transform:translateX(0);
           transition:transform 160ms ease;
         }
 
         .toggle.isOn .toggleThumb {
-          transform:translateX(14px);
+          transform:translateX(21px);
         }
 
         .metrics {
           display:grid;
           grid-template-columns:1fr 1fr;
-          gap:6px;
+          gap:9px;
         }
 
         .metric {
           min-width:0;
-          padding:7px;
-          border-radius:9px;
+          padding:10.5px;
+          border-radius:13.5px;
           background:#f3f8f9;
-          border:1px solid rgba(49,79,88,.07);
+          border:1.5px solid rgba(49,79,88,.07);
         }
 
         .metric span {
           display:block;
           color:#74888e;
-          font-size:8px;
+          font-size:12px;
           line-height:1.2;
-          margin-bottom:2px;
+          margin-bottom:3px;
         }
 
         .metric strong {
           display:block;
-          font-size:10px;
+          font-size:15px;
           line-height:1.2;
           font-variant-numeric:tabular-nums;
         }
 
         .metric small {
           display:block;
-          margin-top:2px;
+          margin-top:3px;
           color:#7b8d92;
-          font-size:8px;
+          font-size:12px;
           line-height:1.2;
           font-weight:650;
         }
@@ -1133,79 +1133,79 @@ function App() {
         .legend {
           display:flex;
           flex-direction:column;
-          gap:8px;
+          gap:12px;
           color:#657b82;
-          font-size:10px;
+          font-size:15px;
         }
 
         .legendRow {
           display:flex;
           align-items:center;
-          gap:7px;
+          gap:10.5px;
         }
 
         .legendSwatch {
           flex:0 0 auto;
-          width:22px;
-          height:4px;
-          border-radius:999px;
+          width:33px;
+          height:6px;
+          border-radius:1498.5px;
           background:#245766;
         }
 
         .legendWall {
           flex:0 0 auto;
-          width:22px;
-          height:14px;
-          border-radius:4px;
-          background:repeating-linear-gradient(135deg,#a2b4b8 0 2px,#d7e1e3 2px 5px);
-          border:1px solid #7f9296;
+          width:33px;
+          height:21px;
+          border-radius:6px;
+          background:repeating-linear-gradient(135deg,#a2b4b8 0 3px,#d7e1e3 3px 7.5px);
+          border:1.5px solid #7f9296;
         }
 
         .legendNormal {
-          width:22px;
-          border-top:2px dashed #7e9197;
+          width:33px;
+          border-top:3px dashed #7e9197;
         }
 
         .legendWindow {
           position:absolute;
-          top:54px;
-          right:12px;
+          top:81px;
+          right:18px;
           z-index:4;
-          width:min(250px, calc(100% - 24px));
-          padding:12px;
-          border:1px solid rgba(38,72,81,.18);
-          border-radius:8px;
+          width:min(375px, calc(100% - 36px));
+          padding:18px;
+          border:1.5px solid rgba(38,72,81,.18);
+          border-radius:12px;
           background:rgba(255,255,255,.96);
-          box-shadow:0 10px 28px rgba(47,76,85,.2);
+          box-shadow:0 15px 42px rgba(47,76,85,.2);
         }
 
         .legendHeader {
           display:flex;
           align-items:center;
           justify-content:space-between;
-          gap:12px;
-          margin-bottom:10px;
+          gap:18px;
+          margin-bottom:15px;
           color:#193b45;
-          font-size:12px;
+          font-size:18px;
           font-weight:800;
         }
 
         .legendClose {
           display:grid;
           place-items:center;
-          width:26px;
-          height:26px;
+          width:39px;
+          height:39px;
           padding:0;
-          border:1px solid rgba(49,79,88,.18);
-          border-radius:6px;
+          border:1.5px solid rgba(49,79,88,.18);
+          border-radius:9px;
           background:#fff;
           color:#245766;
           cursor:pointer;
         }
 
         .legendClose svg {
-          width:15px;
-          height:15px;
+          width:22.5px;
+          height:22.5px;
           fill:none;
           stroke:currentColor;
           stroke-width:1.8;
@@ -1213,16 +1213,16 @@ function App() {
         }
 
         .formula {
-          margin-top:4px;
-          padding:16px 16px 4px;
+          margin-top:6px;
+          padding:24px 24px 6px;
           background:#f5f8f8;
-          border:1px solid #d8e2e3;
-          border-radius:10px;
+          border:1.5px solid #d8e2e3;
+          border-radius:15px;
         }
 
         .formula h3 {
-          margin:0 0 14px;
-          font-size:15px;
+          margin:0 0 21px;
+          font-size:22.5px;
           font-weight:600;
           color:#263b40;
         }
@@ -1230,33 +1230,33 @@ function App() {
         .formula .row {
           display:flex;
           flex-direction:column;
-          gap:5px;
-          margin-bottom:12px;
+          gap:7.5px;
+          margin-bottom:18px;
         }
 
         .formula .label {
-          font-size:12px;
+          font-size:18px;
           font-weight:600;
           color:#52656b;
         }
 
         .equation {
           font-family:Georgia,serif;
-          font-size:15px;
+          font-size:22.5px;
           color:#263b40;
         }
 
         .equation.big {
-          font-size:18px;
+          font-size:27px;
           font-weight:600;
           color:#245b63;
         }
 
         .stageToolbar {
           position:absolute;
-          top:12px;
-          left:12px;
-          right:12px;
+          top:18px;
+          left:18px;
+          right:18px;
           z-index:3;
           display:flex;
           justify-content:space-between;
@@ -1266,18 +1266,18 @@ function App() {
 
         .toolGroup {
           display:flex;
-          gap:6px;
+          gap:9px;
           pointer-events:auto;
         }
 
         .iconButton {
           display:grid;
           place-items:center;
-          width:32px;
-          height:32px;
+          width:48px;
+          height:48px;
           padding:0;
-          border:1px solid rgba(49,79,88,.18);
-          border-radius:8px;
+          border:1.5px solid rgba(49,79,88,.18);
+          border-radius:12px;
           background:#fff;
           color:#245766;
           cursor:pointer;
@@ -1288,13 +1288,13 @@ function App() {
         }
 
         .iconButton:focus-visible {
-          outline:2px solid #245766;
-          outline-offset:2px;
+          outline:3px solid #245766;
+          outline-offset:3px;
         }
 
         .iconButton svg {
-          width:17px;
-          height:17px;
+          width:25.5px;
+          height:25.5px;
           fill:none;
           stroke:currentColor;
           stroke-width:1.8;
@@ -1305,21 +1305,21 @@ function App() {
         .pill {
           display:inline-flex;
           align-items:center;
-          gap:7px;
-          padding:8px 10px;
-          border-radius:999px;
+          gap:10.5px;
+          padding:12px 15px;
+          border-radius:1498.5px;
           background:rgba(255,255,255,.87);
-          border:1px solid rgba(49,79,88,.12);
+          border:1.5px solid rgba(49,79,88,.12);
           color:#496770;
-          font-size:10px;
+          font-size:15px;
           font-weight:760;
-          box-shadow:0 6px 18px rgba(47,76,85,.08);
+          box-shadow:0 9px 27px rgba(47,76,85,.08);
           pointer-events:auto;
         }
 
         .dot {
-          width:7px;
-          height:7px;
+          width:10.5px;
+          height:10.5px;
           border-radius:50%;
           background:#2d8581;
         }
@@ -1329,7 +1329,7 @@ function App() {
           inset:0;
           z-index:1000;
           display:block;
-          padding:16px;
+          padding:24px;
           background:linear-gradient(135deg,#eef7f8,#dce9ed);
         }
 
@@ -1341,29 +1341,29 @@ function App() {
           width:100%;
           height:100%;
           max-height:none;
-          border-radius:12px;
+          border-radius:18px;
         }
 
-        @media (max-width:1180px) {
+        @media (max-width:1770px) {
           .app {
-            max-width:1220px;
-            padding-left:12px;
-            padding-right:12px;
+            max-width:1830px;
+            padding-left:18px;
+            padding-right:18px;
           }
 
           .layout {
-            grid-template-columns:220px minmax(0,1fr);
-            gap:10px;
+            grid-template-columns:330px minmax(0,1fr);
+            gap:15px;
           }
 
           .controls {
-            padding:12px;
+            padding:18px;
           }
         }
 
-        @media (max-width:760px) {
+        @media (max-width:1140px) {
           .app {
-            padding:11px;
+            padding:16.5px;
           }
 
           .topIdentity {
@@ -1385,7 +1385,7 @@ function App() {
           }
 
           .stage {
-            height:480px;
+            height:720px;
           }
 
           .controls {
@@ -1395,10 +1395,39 @@ function App() {
           }
         }
 
-        @media (max-width:520px) {
+        @media (max-width:780px) {
           .stage {
-            height:410px;
+            height:615px;
           }
+        }
+        /* Inherited and built-in sizes, scaled to match the 1.5x px values
+           above (the page otherwise inherits 18px/145% from index.css). */
+        .app {
+          font-size: 27px;
+          line-height: 39.15px;
+          letter-spacing: 0.27px;
+        }
+
+        @media (max-width: 1536px) {
+          .app {
+            font-size: 24px;
+            line-height: 34.8px;
+          }
+        }
+
+        .app input[type=range] {
+          zoom: 1.5;
+        }
+
+        .app .coffee-embed-frame {
+          flex-basis: 225px;
+          width: 225px;
+          height: 54px;
+          border-radius: 12px;
+        }
+
+        .app .coffee-embed {
+          transform: scale(0.9);
         }
       `}</style>
 
