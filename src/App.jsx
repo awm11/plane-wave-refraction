@@ -598,47 +598,40 @@ function RefractionSimulation() {
       points[1],
     );
 
-    const findRearIntersection = (origin) => {
-      const denom = cross(
-        refracted,
+    // The part of the rear face actually lit by the refracted beam: project
+    // both ends of the entry face along the refracted direction onto the rear
+    // face and keep the overlap. If the beam is steep enough to miss the rear
+    // face entirely (it all hits the end faces), nothing is transmitted.
+    const rearHitFraction = (origin) => {
+      const denom = cross(refracted, rearEdge);
 
-        rearEdge,
-      );
+      if (Math.abs(denom) < 1e-9) return null;
 
-      if (Math.abs(denom) < 1e-9) {
-        return null;
-      }
-
-      const rel = sub(points[1], origin);
-
-      const t =
-        cross(
-          rel,
-
-          rearEdge,
-        ) / denom;
-
-      const u =
-        cross(
-          rel,
-
-          refracted,
-        ) / denom;
-
-      if (t >= -1e-9 && u >= -1e-9 && u <= 1 + 1e-9) {
-        return add(
-          origin,
-
-          mul(refracted, t),
-        );
-      }
-
-      return null;
+      return cross(sub(points[1], origin), refracted) / denom;
     };
 
-    const transmittedMaskTop = findRearIntersection(points[0]) || points[1];
+    const beamStart = rearHitFraction(points[0]);
 
-    const transmittedMaskBottom = findRearIntersection(points[3]) || points[2];
+    const beamEnd = rearHitFraction(points[3]);
+
+    const litStart =
+      beamStart === null || beamEnd === null
+        ? 1
+        : clamp(Math.min(beamStart, beamEnd), 0, 1);
+
+    const litEnd =
+      beamStart === null || beamEnd === null
+        ? 0
+        : clamp(Math.max(beamStart, beamEnd), 0, 1);
+
+    const hasTransmittedWave = litEnd - litStart > 1e-6;
+
+    const transmittedMaskTop = add(points[1], mul(rearEdge, litStart));
+
+    const transmittedMaskBottom = add(
+      points[1],
+      mul(rearEdge, hasTransmittedWave ? litEnd : litStart),
+    );
 
     // Illustrative ray: aim it through the block centre so it enters and
     // leaves through the two long faces whenever the geometry allows. If the
@@ -753,6 +746,8 @@ function RefractionSimulation() {
       transmittedMaskTop,
 
       transmittedMaskBottom,
+
+      hasTransmittedWave,
     };
   }, [angleDeg, block, n1, n2, wavelengthSquares, wavelength2Squares]);
 
@@ -963,7 +958,9 @@ function RefractionSimulation() {
 
   const transmittedRows = useMemo(
     () =>
-      createWavefrontSegments({
+      !geometry.hasTransmittedWave
+        ? []
+        : createWavefrontSegments({
         direction: geometry.incident,
         wavelength: geometry.lambda1Px,
         phaseOrigin: geometry.rear,
