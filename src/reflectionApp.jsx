@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import BuyMeCoffeeButton from "./BuyMeCoffeeButton.jsx";
 
 const W = 1200;
@@ -8,6 +8,15 @@ const INITIAL_WAVELENGTH = 80;
 const INITIAL_SPEED = 130;
 const INITIAL_BEAM_WIDTH = 170;
 const WALL_X = 850;
+const WALL_THICKNESS = 18;
+
+// The legend sits in the empty strip to the right of the mirror, just below
+// its "MIRROR" label, and shrinks to fit that strip so it never covers the
+// mirror or the beams. Positions are in diagram (viewBox) units.
+const LEGEND_GAP = 16;
+const LEGEND_TOP = 96;
+const LEGEND_EDGE_MARGIN_PX = 18;
+const LEGEND_MIN_SCALE = 0.5;
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const rad = (deg) => (deg * Math.PI) / 180;
@@ -276,6 +285,60 @@ function App() {
   const [showAngles, setShowAngles] = useState(true);
   const [showWavefronts, setShowWavefronts] = useState(true);
   const [showLegend, setShowLegend] = useState(true);
+  const simRef = useRef(null);
+  const legendRef = useRef(null);
+  const [legendLayout, setLegendLayout] = useState(null);
+
+  useLayoutEffect(() => {
+    const svg = simRef.current;
+    const legend = legendRef.current;
+
+    if (!svg || !legend) return undefined;
+
+    const place = () => {
+      const stage = svg.parentElement;
+      const svgBox = svg.getBoundingClientRect();
+      const stageBox = stage.getBoundingClientRect();
+
+      if (!svgBox.width || !svgBox.height || !legend.offsetWidth) return;
+
+      // Where the viewBox lands inside the stage ("meet" letterboxing).
+      const k = Math.min(svgBox.width / W, svgBox.height / H);
+      const originX =
+        svgBox.left - stageBox.left - stage.clientLeft + (svgBox.width - W * k) / 2;
+      const originY =
+        svgBox.top - stageBox.top - stage.clientTop + (svgBox.height - H * k) / 2;
+
+      const besideMirror = originX + (WALL_X + WALL_THICKNESS + LEGEND_GAP) * k;
+      const top = originY + LEGEND_TOP * k;
+      const rightEdge = stage.clientWidth - LEGEND_EDGE_MARGIN_PX;
+      const scale = clamp(
+        (rightEdge - besideMirror) / legend.offsetWidth,
+        LEGEND_MIN_SCALE,
+        1,
+      );
+      // On very narrow screens the strip is too small even at the minimum
+      // scale; keep the legend inside the stage rather than off its edge.
+      const left = Math.min(besideMirror, rightEdge - legend.offsetWidth * scale);
+
+      setLegendLayout((previous) =>
+        previous &&
+        previous.left === left &&
+        previous.top === top &&
+        previous.scale === scale
+          ? previous
+          : { left, top, scale },
+      );
+    };
+
+    place();
+
+    const observer = new ResizeObserver(place);
+    observer.observe(svg);
+    observer.observe(legend);
+
+    return () => observer.disconnect();
+  }, [showLegend]);
   const [maximized, setMaximized] = useState(false);
 
   const geometry = useMemo(() => {
@@ -1168,10 +1231,11 @@ function App() {
 
         .legendWindow {
           position:absolute;
-          top:81px;
-          right:18px;
+          top:0;
+          left:0;
           z-index:4;
-          width:min(375px, calc(100% - 36px));
+          width:max-content;
+          transform-origin:0 0;
           padding:18px;
           border:1.5px solid rgba(38,72,81,.18);
           border-radius:12px;
@@ -1669,6 +1733,7 @@ function App() {
           </div>
 
           <svg
+            ref={simRef}
             className="sim"
             viewBox={`0 0 ${W} ${H}`}
             aria-label="Animated plane wave reflection"
@@ -2081,7 +2146,20 @@ function App() {
           </svg>
 
           {showLegend && (
-            <aside className="legendWindow" aria-label="Wave diagram legend">
+            <aside
+              ref={legendRef}
+              className="legendWindow"
+              aria-label="Wave diagram legend"
+              style={
+                legendLayout
+                  ? {
+                      left: `${legendLayout.left}px`,
+                      top: `${legendLayout.top}px`,
+                      transform: `scale(${legendLayout.scale})`,
+                    }
+                  : { visibility: "hidden" }
+              }
+            >
               <div className="legendHeader">
                 <span>Legend</span>
                 <button
