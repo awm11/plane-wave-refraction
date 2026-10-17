@@ -640,7 +640,51 @@ function RefractionSimulation() {
 
     const transmittedMaskBottom = findRearIntersection(points[3]) || points[2];
 
-    const refractedExit = findRearIntersection(front) || rear;
+    // Illustrative ray: aim it through the block centre so it enters and
+    // leaves through the two long faces whenever the geometry allows. If the
+    // refracted ray is too steep for that, start it as far along the entry
+    // face as possible and let it exit through whichever face it actually hits.
+    const RAY_FACE_MARGIN = 30;
+
+    const tanTheta2 =
+      dot(refracted, uy) / Math.max(1e-9, dot(refracted, ux));
+
+    const maxRayShift = BLOCK_H / 2 - RAY_FACE_MARGIN;
+
+    const rayShift = clamp(
+      (BLOCK_W / 2) * tanTheta2,
+      -maxRayShift,
+      maxRayShift,
+    );
+
+    const rayEntry = sub(front, mul(uy, rayShift));
+
+    let rayExit = rear;
+    let rayExitEdge = -1;
+    let rayExitT = Infinity;
+
+    for (let i = 0; i < 4; i += 1) {
+      const a = points[i];
+      const edge = sub(points[(i + 1) % 4], a);
+      const denom = cross(refracted, edge);
+
+      if (Math.abs(denom) < 1e-9) continue;
+
+      const rel = sub(a, rayEntry);
+      const t = cross(rel, edge) / denom;
+      const u = cross(rel, refracted) / denom;
+
+      if (t > 1e-6 && u >= -1e-9 && u <= 1 + 1e-9 && t < rayExitT) {
+        rayExitT = t;
+        rayExitEdge = i;
+        rayExit = add(rayEntry, mul(refracted, t));
+      }
+    }
+
+    // points[1] -> points[2] is the rear face.
+    const rayExitsRear = rayExitEdge === 1;
+
+    const refractedExit = rayExit;
 
     const shadowLength = W + BLOCK_W + 200;
 
@@ -670,6 +714,10 @@ function RefractionSimulation() {
       rear,
 
       refractedExit,
+
+      rayEntry,
+
+      rayExitsRear,
 
       frontTop,
 
@@ -728,8 +776,11 @@ function RefractionSimulation() {
   };
   const labelOrigin =
     Math.abs(angleDeg) < 25
-      ? add({ x: block.x, y: block.y }, mul(labelUx, -BLOCK_W / 2))
-      : geometry.front;
+      ? add(
+          add({ x: block.x, y: block.y }, mul(labelUx, -BLOCK_W / 2)),
+          sub(geometry.rayEntry, geometry.front),
+        )
+      : geometry.rayEntry;
   const labelSin2 = clamp(
     (n1 / n2) * -Math.sin(labelAngle),
     -0.999999,
@@ -2929,7 +2980,7 @@ function RefractionSimulation() {
               <g display={raysVisible ? "inline" : "none"}>
                 <path
                   d={angleWedgePath(
-                    geometry.front,
+                    geometry.rayEntry,
 
                     mul(geometry.incident, -1),
 
@@ -2947,7 +2998,7 @@ function RefractionSimulation() {
 
                 <path
                   d={angleWedgePath(
-                    geometry.front,
+                    geometry.rayEntry,
 
                     geometry.ux,
 
@@ -2993,13 +3044,13 @@ function RefractionSimulation() {
               />
 
               <line
-                x1={geometry.front.x - 125 * geometry.ux.x}
+                x1={geometry.rayEntry.x - 125 * geometry.ux.x}
 
-                y1={geometry.front.y - 125 * geometry.ux.y}
+                y1={geometry.rayEntry.y - 125 * geometry.ux.y}
 
-                x2={geometry.front.x + 125 * geometry.ux.x}
+                x2={geometry.rayEntry.x + 125 * geometry.ux.x}
 
-                y2={geometry.front.y + 125 * geometry.ux.y}
+                y2={geometry.rayEntry.y + 125 * geometry.ux.y}
 
                 stroke="rgba(22,57,67,.4)"
 
@@ -3013,38 +3064,38 @@ function RefractionSimulation() {
               <g display={raysVisible ? "inline" : "none"}>
                 {/* Incident ray */}
                 <line
-                  x1={geometry.front.x - 180}
-                  y1={geometry.front.y}
-                  x2={geometry.front.x - 90}
-                  y2={geometry.front.y}
+                  x1={geometry.rayEntry.x - 180}
+                  y1={geometry.rayEntry.y}
+                  x2={geometry.rayEntry.x - 90}
+                  y2={geometry.rayEntry.y}
                   stroke="rgba(22,57,67,.55)"
                   strokeWidth="3"
                   markerEnd="url(#rayArrow)"
                 />
 
                 <line
-                  x1={geometry.front.x - 90}
-                  y1={geometry.front.y}
-                  x2={geometry.front.x}
-                  y2={geometry.front.y}
+                  x1={geometry.rayEntry.x - 90}
+                  y1={geometry.rayEntry.y}
+                  x2={geometry.rayEntry.x}
+                  y2={geometry.rayEntry.y}
                   stroke="rgba(22,57,67,.55)"
                   strokeWidth="3"
                 />
 
                 {/* Refracted ray */}
                 <line
-                  x1={geometry.front.x}
-                  y1={geometry.front.y}
-                  x2={geometry.front.x + 75 * geometry.refracted.x}
-                  y2={geometry.front.y + 75 * geometry.refracted.y}
+                  x1={geometry.rayEntry.x}
+                  y1={geometry.rayEntry.y}
+                  x2={geometry.rayEntry.x + 75 * geometry.refracted.x}
+                  y2={geometry.rayEntry.y + 75 * geometry.refracted.y}
                   stroke="rgba(22,57,67,.55)"
                   strokeWidth="3"
                   markerEnd="url(#rayArrow)"
                 />
 
                 <line
-                  x1={geometry.front.x + 75 * geometry.refracted.x}
-                  y1={geometry.front.y + 75 * geometry.refracted.y}
+                  x1={geometry.rayEntry.x + 75 * geometry.refracted.x}
+                  y1={geometry.rayEntry.y + 75 * geometry.refracted.y}
                   x2={geometry.refractedExit.x}
                   y2={geometry.refractedExit.y}
                   stroke="rgba(22,57,67,.55)"
@@ -3052,6 +3103,8 @@ function RefractionSimulation() {
                 />
 
                 {/* Transmitted ray */}
+                {geometry.rayExitsRear && (
+                <>
                 <line
                   x1={geometry.refractedExit.x}
                   y1={geometry.refractedExit.y}
@@ -3070,6 +3123,8 @@ function RefractionSimulation() {
                   stroke="rgba(22,57,67,.55)"
                   strokeWidth="3"
                 />
+                </>
+                )}
               </g>
 
               <text
